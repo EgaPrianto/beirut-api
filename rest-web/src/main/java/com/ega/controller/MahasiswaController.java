@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,7 +39,7 @@ public class MahasiswaController {
   @ResponseBody
   public GdnRestSingleResponse<MahasiswaDTO> findMahasiswaById(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-      @RequestParam(required = true) int id) {
+      @RequestBody int id) {
     Mahasiswa mahasiswa = simpleCRUD.findMahasiswaById(id);
     MahasiswaDTO newDTO = new MahasiswaDTO();
     newDTO.setPrimaryKey(mahasiswa.getId() + "");
@@ -55,7 +56,7 @@ public class MahasiswaController {
   @ResponseBody
   public GdnRestSingleResponse<MahasiswaDTO> findMahasiswaByNama(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-      @RequestParam(required = true) String nama) {
+      @RequestBody String nama) {
     Mahasiswa mahasiswa = simpleCRUD.findByNama(nama);
     MahasiswaDTO newDTO = new MahasiswaDTO();
     newDTO.setPrimaryKey(mahasiswa.getId() + "");
