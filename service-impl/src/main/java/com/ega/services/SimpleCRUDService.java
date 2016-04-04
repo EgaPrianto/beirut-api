@@ -38,6 +38,19 @@ public class SimpleCRUDService implements SimpleCRUD {
   }
 
   @Override
+  @Transactional(readOnly = false)
+  public Mahasiswa deleteMahasiswaById(int id){
+    Mahasiswa res = new Mahasiswa();
+    Mahasiswa temp = mahasiswaDao.findOne(id);
+    res.setId(temp.getId());
+    res.setMataKuliah(temp.getMataKuliah());
+    res.setNama(temp.getNama());
+    res.setNpm(temp.getNpm());
+    this.mahasiswaDao.delete(temp);
+    return res;
+  }
+  
+  @Override
   public List<Mahasiswa> getAllMahasiswa() {
     return this.mahasiswaDao.findAll();
   }

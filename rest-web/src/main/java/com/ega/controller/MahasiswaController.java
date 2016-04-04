@@ -1,6 +1,5 @@
 package com.ega.controller;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +16,7 @@ import com.ega.dto.MahasiswaDTO;
 import com.ega.entities.Mahasiswa;
 import com.ega.services.SimpleCRUD;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gdn.common.web.wrapper.response.GdnBaseRestResponse;
 import com.gdn.common.web.wrapper.response.GdnRestListResponse;
 import com.gdn.common.web.wrapper.response.GdnRestSingleResponse;
 import com.gdn.common.web.wrapper.response.PageMetaData;
@@ -48,7 +48,6 @@ public class MahasiswaController {
     return new GdnRestSingleResponse<MahasiswaDTO>(newDTO, requestId);
   }
 
-
   @RequestMapping(value = "findMahasiswaByNama/", method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
       consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -64,7 +63,6 @@ public class MahasiswaController {
     newDTO.setNpm(mahasiswa.getNpm());
     return new GdnRestSingleResponse<MahasiswaDTO>(newDTO, requestId);
   }
-
 
   @RequestMapping(value = "getAllMahasiswa/", method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -86,26 +84,71 @@ public class MahasiswaController {
         requestId);
   }
 
+  @RequestMapping(value = "updateing mahasiswa", method = RequestMethod.POST,
+      produces = {MediaType.APPLICATION_XML_VALUE},
+      consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+  @ApiOperation(value = "update mahasiswa dengan id value",
+      notes = "param id adalah id mahasiswa yang ingin di ganti, param mahasiswaIn adalah data mahasiswa yang baru")
+  @ResponseBody
+  public GdnRestSingleResponse<MahasiswaDTO> updateMahasiswa(@RequestParam String storeId,
+      @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
+      @RequestParam Integer id, @RequestBody Mahasiswa mahasiswaIn) {
+    Mahasiswa mahasiswa = this.simpleCRUD.findMahasiswaById(id);
+    mahasiswa.setNama(mahasiswaIn.getNama());
+    mahasiswa.setNpm(mahasiswaIn.getNpm());
+    this.simpleCRUD.saveMahasiswa(mahasiswa);
+    MahasiswaDTO updatedMahasiswaDTO = new MahasiswaDTO();
+    updatedMahasiswaDTO.setNama(mahasiswa.getNama());
+    updatedMahasiswaDTO.setNpm(mahasiswa.getNpm());
+    GdnRestSingleResponse<MahasiswaDTO> gdnUpdatedMahasiswa =
+        new GdnRestSingleResponse<>(updatedMahasiswaDTO, requestId);
+    return gdnUpdatedMahasiswa;
+  }
+
+  @RequestMapping(value = "delete mahasiswa", method = RequestMethod.POST)
+  @ApiOperation(value = "update mahasiswa dengan id value",
+      notes = "param id adalah id mahasiswa yang ingin di ganti, param mahasiswaIn adalah data mahasiswa yang baru")
+  @ResponseBody
+  public GdnRestSingleResponse<MahasiswaDTO> deleteMahasiswaById(@RequestParam String storeId,
+      @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
+      @RequestParam int id) {
+    Mahasiswa deleted = this.simpleCRUD.deleteMahasiswaById(id);
+    MahasiswaDTO deletedMahasiswaDTO = new MahasiswaDTO();
+    deletedMahasiswaDTO.setNama(deleted.getNama());
+    deletedMahasiswaDTO.setNpm(deleted.getNpm());
+    GdnRestSingleResponse<MahasiswaDTO> gdnDeletedMahasiswa = new GdnRestSingleResponse<>(deletedMahasiswaDTO, requestId);
+    return gdnDeletedMahasiswa;
+  }
   //
   // @RequestMapping(value = "saveMahasiswa/", method = RequestMethod.GET,
-  // produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-  // consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+  // produces = {MediaType.APPLICATION_JSON_VALUE,
+  // MediaType.APPLICATION_XML_VALUE},
+  // consumes = {MediaType.APPLICATION_JSON_VALUE,
+  // MediaType.APPLICATION_XML_VALUE})
   // @ApiOperation(value = "simpan 1 mahasiswa", notes = "")
   // @ResponseBody
-  // public GdnRestSingleRequest<SimpleRequestHolder> saveMahasiswa(@RequestParam String storeId,
-  // @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-  // @RequestParam(required = true) String nama, @RequestParam(required = true) String npm) {
+  // public GdnRestSingleRequest<SimpleRequestHolder>
+  // saveMahasiswa(@RequestParam String storeId,
+  // @RequestParam String channelId, @RequestParam String clientId,
+  // @RequestParam String requestId,
+  // @RequestParam(required = true) String nama, @RequestParam(required =
+  // true) String npm) {
   //
   // return new GdnRestSingleResponse<MahasiswaDTO>(newDTO, requestId);
   // }
   //
-  // @RequestMapping(value = "findMahasiswaDetailById/", method = RequestMethod.GET,
-  // produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-  // consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+  // @RequestMapping(value = "findMahasiswaDetailById/", method =
+  // RequestMethod.GET,
+  // produces = {MediaType.APPLICATION_JSON_VALUE,
+  // MediaType.APPLICATION_XML_VALUE},
+  // consumes = {MediaType.APPLICATION_JSON_VALUE,
+  // MediaType.APPLICATION_XML_VALUE})
   // @ApiOperation(value = "Ambil 1 mahasiswa sesuai id", notes = "detil")
   // @ResponseBody
-  // public GdnRestSingleResponse<MahasiswaDTO> findMahasiswaDetail(@RequestParam String storeId,
-  // @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
+  // public GdnRestSingleResponse<MahasiswaDTO>
+  // findMahasiswaDetail(@RequestParam String storeId,
+  // @RequestParam String channelId, @RequestParam String clientId,
+  // @RequestParam String requestId,
   // @RequestParam(required = true) int id) {
   // Mahasiswa mahasiswa = simpleCRUD.findMahasiswaDetail(id);
   // MahasiswaDetilDTO newDTO = new MahasiswaDetilDTO();

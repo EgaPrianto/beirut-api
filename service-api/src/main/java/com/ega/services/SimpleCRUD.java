@@ -12,6 +12,8 @@ public interface SimpleCRUD {
 
   Mahasiswa findMahasiswaDetail(int id);
 
+  Mahasiswa deleteMahasiswaById(int id);
+  
   List<Mahasiswa> getAllMahasiswa();
 
   void saveMahasiswa(Mahasiswa mahasiswa);
