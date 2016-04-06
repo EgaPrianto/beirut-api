@@ -33,6 +33,4 @@ public class MahasiswaDTO extends BaseResponse {
   public void setPrimaryKey(String primaryKey) {
     this.primaryKey = primaryKey;
   }
-
-
 }

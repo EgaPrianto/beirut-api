@@ -3,7 +3,7 @@ package com.ega.dto;
 import java.util.Set;
 
 public class MahasiswaDetilDTO extends MahasiswaDTO {
-  Set<MataKuliahDTO> setMataKuliah;
+  private Set<MataKuliahDTO> setMataKuliah;
 
   public Set<MataKuliahDTO> getListMataKuliah() {
     return setMataKuliah;
@@ -12,6 +12,7 @@ public class MahasiswaDetilDTO extends MahasiswaDTO {
   public void setSetMataKuliah(Set<MataKuliahDTO> set) {
     this.setMataKuliah = set;
   }
+
 
 
 }
