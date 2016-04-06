@@ -53,7 +53,7 @@ public class MahasiswaController {
   @ResponseBody
   public GdnRestSingleResponse<MahasiswaDTO> findMahasiswaById(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-      @RequestBody int id) {
+      @RequestParam int id) {
     final Mahasiswa mahasiswa = simpleCRUD.findMahasiswaById(id);
     final MahasiswaDTO newDTO = new MahasiswaDTO();
     newDTO.setPrimaryKey(mahasiswa.getId() + "");
@@ -70,7 +70,7 @@ public class MahasiswaController {
   public GdnRestSingleResponse<MahasiswaDTO> findMahasiswaByNama(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
       @RequestBody String nama) {
-    final Mahasiswa mahasiswa = simpleCRUD.findByNama(nama);
+    final Mahasiswa mahasiswa = simpleCRUD.findMahasiswaByNama(nama);
     final MahasiswaDTO newDTO = new MahasiswaDTO();
     newDTO.setPrimaryKey(mahasiswa.getId() + "");
     newDTO.setNama(mahasiswa.getNama());
