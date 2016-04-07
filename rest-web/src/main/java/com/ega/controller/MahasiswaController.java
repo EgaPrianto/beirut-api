@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ega.dto.MahasiswaDTO;
+import com.ega.dto.MataKuliahDTO;
 import com.ega.entities.Mahasiswa;
+import com.ega.entities.MataKuliah;
 import com.ega.services.SimpleCRUD;
 import com.gdn.common.web.wrapper.response.GdnRestListResponse;
 import com.gdn.common.web.wrapper.response.GdnRestSingleResponse;
@@ -31,7 +33,7 @@ public class MahasiswaController {
   // private ObjectMapper mapper;
 
   @RequestMapping(value = "delete mahasiswa", method = RequestMethod.POST)
-  @ApiOperation(value = "update mahasiswa dengan id value",
+  @ApiOperation(value = "delete mahasiswa dengan id value",
       notes = "param id adalah id mahasiswa yang ingin di ganti, param mahasiswaIn adalah data mahasiswa yang baru")
   @ResponseBody
   public GdnRestSingleResponse<MahasiswaDTO> deleteMahasiswaById(@RequestParam String storeId,
@@ -67,17 +69,17 @@ public class MahasiswaController {
       consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
   @ApiOperation(value = "Ambil 1 mahasiswa sesuai nama", notes = "ga detil")
   @ResponseBody
-  public GdnRestSingleResponse<MahasiswaDTO> findMahasiswaByNama(@RequestParam String storeId,
+  public GdnRestListResponse<MahasiswaDTO> findMahasiswaByNama(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
       @RequestBody String nama) {
-    final Mahasiswa mahasiswa = simpleCRUD.findMahasiswaByNama(nama);
-    final MahasiswaDTO newDTO = new MahasiswaDTO();
-    newDTO.setPrimaryKey(mahasiswa.getId() + "");
-    newDTO.setNama(mahasiswa.getNama());
-    newDTO.setNpm(mahasiswa.getNpm());
-    return new GdnRestSingleResponse<MahasiswaDTO>(newDTO, requestId);
+    final List<Mahasiswa> mahasiswa = simpleCRUD.findMahasiswaByNama(nama);
+    final List<MahasiswaDTO> mahasiswaDTO = new ArrayList<>();
+    for (Mahasiswa mahasiswa2 : mahasiswa) {
+      mahasiswaDTO.add(MahasiswaToDTOConvert(mahasiswa2));
+    }
+    return new GdnRestListResponse<>(mahasiswaDTO, new PageMetaData(50, 0, mahasiswaDTO.size()),
+        requestId);
   }
-
 
   @RequestMapping(value = "getAllMahasiswa/", method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -97,6 +99,23 @@ public class MahasiswaController {
     }
     return new GdnRestListResponse<MahasiswaDTO>(listDTO, new PageMetaData(50, 0, temp.size()),
         requestId);
+  }
+
+  private MahasiswaDTO MahasiswaToDTOConvert(Mahasiswa in) {
+    MahasiswaDTO res = new MahasiswaDTO();
+    res.setNama(in.getNama());
+    res.setNpm(in.getNpm());
+    return res;
+  }
+
+
+  private MataKuliahDTO MKToDTOConvert(MataKuliah in) {
+    MataKuliahDTO res = new MataKuliahDTO();
+    res.setKode(in.getKode());
+    res.setMahasiswa(MahasiswaToDTOConvert(in.getMahasiswa()));
+    res.setNama(in.getNama());
+    res.setNamaDosen(in.getNamaDosen());
+    return res;
   }
 
   // @RequestMapping(value = "findMahasiswaDetailById/", method = RequestMethod.GET,

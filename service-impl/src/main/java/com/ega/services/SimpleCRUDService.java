@@ -43,7 +43,7 @@ public class SimpleCRUDService implements SimpleCRUD {
   }
 
   @Override
-  public Mahasiswa findMahasiswaByNama(String nama) {
+  public List<Mahasiswa> findMahasiswaByNama(String nama) {
     return getMahasiswaDao().findByNama(nama);
   }
 
@@ -63,7 +63,7 @@ public class SimpleCRUDService implements SimpleCRUD {
   }
 
   @Override
-  public MataKuliah findMataKuliahByNama(String nama) {
+  public List<MataKuliah> findMataKuliahByNama(String nama) {
     return mataKuliahDao.findByNama(nama);
   }
 

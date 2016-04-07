@@ -13,13 +13,13 @@ public interface SimpleCRUD {
 
   Mahasiswa findMahasiswaById(int id);
 
-  Mahasiswa findMahasiswaByNama(String nama);
+  List<Mahasiswa> findMahasiswaByNama(String nama);
 
   Mahasiswa findMahasiswaDetail(int id);
 
   MataKuliah findMataKuliahById(int id);
 
-  MataKuliah findMataKuliahByNama(String nama);
+  List<MataKuliah> findMataKuliahByNama(String nama);
 
   List<Mahasiswa> getAllMahasiswa();
 

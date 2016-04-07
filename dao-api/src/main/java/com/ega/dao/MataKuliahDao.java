@@ -4,6 +4,8 @@
  */
 package com.ega.dao;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ega.entities.MataKuliah;
@@ -13,5 +15,5 @@ import com.ega.entities.MataKuliah;
  * @author Ega Prianto
  */
 public interface MataKuliahDao extends JpaRepository<MataKuliah, Integer> {
-  public MataKuliah findByNama(String name);
+  public List<MataKuliah> findByNama(String name);
 }
