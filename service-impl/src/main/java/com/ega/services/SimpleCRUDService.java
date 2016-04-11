@@ -31,9 +31,10 @@ public class SimpleCRUDService implements SimpleCRUD {
   }
 
   @Override
+  @Transactional(readOnly = false)
   public MataKuliah deleteMataKuliahById(int id) {
     MataKuliah temp = mataKuliahDao.findOne(id);
-    this.mataKuliahDao.delete(id);
+    this.mataKuliahDao.delete(temp);
     return temp;
   }
 

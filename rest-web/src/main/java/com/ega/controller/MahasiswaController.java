@@ -2,6 +2,7 @@ package com.ega.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ega.dto.MahasiswaDTO;
+import com.ega.dto.MahasiswaDetilDTO;
 import com.ega.dto.MataKuliahDTO;
 import com.ega.entities.Mahasiswa;
 import com.ega.entities.MataKuliah;
@@ -81,6 +83,19 @@ public class MahasiswaController {
         requestId);
   }
 
+  @RequestMapping(value = "findMahasiswaDetailById/", method = RequestMethod.GET,
+      produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+      consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+  @ApiOperation(value = "Ambil 1 mahasiswa sesuai id", notes = "detil")
+  @ResponseBody
+  public GdnRestSingleResponse<MahasiswaDetilDTO> findMahasiswaDetail(@RequestParam String storeId,
+      @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
+      @RequestParam(required = true) int id) {
+    Mahasiswa mahasiswa = simpleCRUD.findMahasiswaDetail(id);
+    MahasiswaDetilDTO newDTO = MahasiswaToDetilDTOConvert(mahasiswa);
+    return new GdnRestSingleResponse<MahasiswaDetilDTO>(newDTO, requestId);
+  }
+
   @RequestMapping(value = "getAllMahasiswa/", method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
   @ApiOperation(value = "Ambil semua mahasiswa", notes = "ambil semua mahasiswa yang ada")
@@ -101,13 +116,29 @@ public class MahasiswaController {
         requestId);
   }
 
+
+  private MahasiswaDetilDTO MahasiswaToDetilDTOConvert(Mahasiswa in) {
+    MahasiswaDetilDTO res = new MahasiswaDetilDTO();
+    res.setNama(in.getNama());
+    res.setNpm(in.getNpm());
+    Set<MataKuliah> mahasiswaMK = in.getMataKuliah();
+    MataKuliahDTO[] listMK = new MataKuliahDTO[mahasiswaMK.size()];
+    int counter = 0;
+    for (MataKuliah mataKuliah : mahasiswaMK) {
+      listMK[counter] = MKToDTOConvert(mataKuliah);
+      System.out.println(listMK[counter]);
+      counter++;
+    }
+    res.setSetMataKuliah(listMK);
+    return res;
+  }
+
   private MahasiswaDTO MahasiswaToDTOConvert(Mahasiswa in) {
     MahasiswaDTO res = new MahasiswaDTO();
     res.setNama(in.getNama());
     res.setNpm(in.getNpm());
     return res;
   }
-
 
   private MataKuliahDTO MKToDTOConvert(MataKuliah in) {
     MataKuliahDTO res = new MataKuliahDTO();
@@ -117,34 +148,6 @@ public class MahasiswaController {
     res.setNamaDosen(in.getNamaDosen());
     return res;
   }
-
-  // @RequestMapping(value = "findMahasiswaDetailById/", method = RequestMethod.GET,
-  // produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-  // consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-  // @ApiOperation(value = "Ambil 1 mahasiswa sesuai id", notes = "detil")
-  // @ResponseBody
-  // public GdnRestSingleResponse<MahasiswaDTO> findMahasiswaDetail(@RequestParam String storeId,
-  // @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-  // @RequestParam(required = true) int id) {
-  // Mahasiswa mahasiswa = simpleCRUD.findMahasiswaDetail(id);
-  // MahasiswaDetilDTO newDTO = new MahasiswaDetilDTO();
-  // Set<MataKuliah> mahasiswaMK = mahasiswa.getMataKuliah();
-  // Set<MataKuliahDTO> newSetMK = new HashSet<MataKuliahDTO>();
-  // newDTO.setPrimaryKey(mahasiswa.getId() + "");
-  // newDTO.setNama(mahasiswa.getNama());
-  // newDTO.setNpm(mahasiswa.getNpm());
-  // newDTO.setSetMataKuliah(newSetMK);
-  // for (MataKuliah mataKuliah : mahasiswaMK) {
-  // MataKuliahDTO newMKDTO = new MataKuliahDTO();
-  // newMKDTO.setId(mataKuliah.getId() + "");
-  // newMKDTO.setKode(mataKuliah.getKode());
-  // newMKDTO.setMahasiswa(newDTO);
-  // newMKDTO.setNama(mataKuliah.getNama());
-  // newMKDTO.setNamaDosen(mataKuliah.getNamaDosen());
-  // newSetMK.add(newMKDTO);
-  // }
-  // return new GdnRest<MahasiswaDTO>(newDTO, requestId);
-  // }
 
   @RequestMapping(value = "saveMahasiswa/", method = RequestMethod.POST,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
