@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ega.dto.MahasiswaDTO;
-import com.ega.dto.MahasiswaDetilDTO;
-import com.ega.dto.MataKuliahDTO;
+import com.ega.dto.request.MahasiswaDTORequest;
+import com.ega.dto.request.MataKuliahDTORequest;
+import com.ega.dto.response.MahasiswaDTO;
+import com.ega.dto.response.MahasiswaDetilDTO;
+import com.ega.dto.response.MataKuliahDTO;
 import com.ega.entities.Mahasiswa;
 import com.ega.entities.MataKuliah;
 import com.ega.services.SimpleCRUD;
@@ -32,15 +35,17 @@ public class MahasiswaController {
 
   @Autowired
   private SimpleCRUD simpleCRUD;
+  @Autowired
+  private Mapper dozerMapper;
   // private ObjectMapper mapper;
 
-  @RequestMapping(value = "delete mahasiswa", method = RequestMethod.POST)
+  @RequestMapping(value = "deleteMahasiswa", method = RequestMethod.POST)
   @ApiOperation(value = "delete mahasiswa dengan id value",
       notes = "param id adalah id mahasiswa yang ingin di ganti, param mahasiswaIn adalah data mahasiswa yang baru")
   @ResponseBody
   public GdnRestSingleResponse<MahasiswaDTO> deleteMahasiswaById(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-      @RequestParam int id) {
+      @RequestParam String id) {
     final Mahasiswa deleted = this.simpleCRUD.deleteMahasiswaById(id);
     final MahasiswaDTO deletedMahasiswaDTO = new MahasiswaDTO();
     deletedMahasiswaDTO.setNama(deleted.getNama());
@@ -50,14 +55,14 @@ public class MahasiswaController {
     return gdnDeletedMahasiswa;
   }
 
-  @RequestMapping(value = "findMahasiswaById/", method = RequestMethod.GET,
+  @RequestMapping(value = "findMahasiswaById", method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
       consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
   @ApiOperation(value = "Ambil 1 mahasiswa sesuai id", notes = "ga detil")
   @ResponseBody
   public GdnRestSingleResponse<MahasiswaDTO> findMahasiswaById(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-      @RequestParam int id) {
+      @RequestParam String id) {
     final Mahasiswa mahasiswa = simpleCRUD.findMahasiswaById(id);
     final MahasiswaDTO newDTO = new MahasiswaDTO();
     newDTO.setPrimaryKey(mahasiswa.getId() + "");
@@ -66,7 +71,7 @@ public class MahasiswaController {
     return new GdnRestSingleResponse<MahasiswaDTO>(newDTO, requestId);
   }
 
-  @RequestMapping(value = "findMahasiswaByNama/", method = RequestMethod.GET,
+  @RequestMapping(value = "findMahasiswaByNama", method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
       consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
   @ApiOperation(value = "Ambil 1 mahasiswa sesuai nama", notes = "ga detil")
@@ -83,20 +88,20 @@ public class MahasiswaController {
         requestId);
   }
 
-  @RequestMapping(value = "findMahasiswaDetailById/", method = RequestMethod.GET,
+  @RequestMapping(value = "findMahasiswaDetailById", method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
       consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
   @ApiOperation(value = "Ambil 1 mahasiswa sesuai id", notes = "detil")
   @ResponseBody
   public GdnRestSingleResponse<MahasiswaDetilDTO> findMahasiswaDetail(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-      @RequestParam(required = true) int id) {
+      @RequestParam(required = true) String id) {
     Mahasiswa mahasiswa = simpleCRUD.findMahasiswaDetail(id);
     MahasiswaDetilDTO newDTO = MahasiswaToDetilDTOConvert(mahasiswa);
     return new GdnRestSingleResponse<MahasiswaDetilDTO>(newDTO, requestId);
   }
 
-  @RequestMapping(value = "getAllMahasiswa/", method = RequestMethod.GET,
+  @RequestMapping(value = "getAllMahasiswa", method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
   @ApiOperation(value = "Ambil semua mahasiswa", notes = "ambil semua mahasiswa yang ada")
   @ResponseBody
@@ -121,7 +126,7 @@ public class MahasiswaController {
     MahasiswaDetilDTO res = new MahasiswaDetilDTO();
     res.setNama(in.getNama());
     res.setNpm(in.getNpm());
-    Set<MataKuliah> mahasiswaMK = in.getMataKuliah();
+    Set<MataKuliah> mahasiswaMK = in.getMataKuliahs();
     MataKuliahDTO[] listMK = new MataKuliahDTO[mahasiswaMK.size()];
     int counter = 0;
     for (MataKuliah mataKuliah : mahasiswaMK) {
@@ -143,28 +148,35 @@ public class MahasiswaController {
   private MataKuliahDTO MKToDTOConvert(MataKuliah in) {
     MataKuliahDTO res = new MataKuliahDTO();
     res.setKode(in.getKode());
-    res.setMahasiswa(MahasiswaToDTOConvert(in.getMahasiswa()));
     res.setNama(in.getNama());
     res.setNamaDosen(in.getNamaDosen());
     return res;
   }
 
-  @RequestMapping(value = "saveMahasiswa/", method = RequestMethod.POST,
+  @RequestMapping(value = "saveMahasiswa", method = RequestMethod.POST,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
       consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
   @ApiOperation(value = "simpan 1 mahasiswa", notes = "")
   @ResponseBody
   public GdnRestSingleResponse<MahasiswaDTO> saveMahasiswa(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-      @RequestBody Mahasiswa newMahasiswa) {
-    MahasiswaDTO newDTO = new MahasiswaDTO();
-    newDTO.setNama(newMahasiswa.getNama());
-    newDTO.setNpm(newMahasiswa.getNpm());
-    this.simpleCRUD.saveMahasiswa(newMahasiswa);
-    return new GdnRestSingleResponse<>(newDTO, requestId);
+      @RequestBody MahasiswaDTORequest newMahasiswa) {
+    Mahasiswa dest = new Mahasiswa();
+    dozerMapper.map(newMahasiswa, dest);
+    if (newMahasiswa.getMataKuliahs() != null) {
+      for (MataKuliahDTORequest iterable_element : newMahasiswa.getMataKuliahs()) {
+        MataKuliah mk = new MataKuliah();
+        dozerMapper.map(iterable_element, mk);
+        dest.getMataKuliahs().add(mk);
+      }
+    }
+    this.simpleCRUD.saveMahasiswa(dest);
+    MahasiswaDTO resDTO = new MahasiswaDTO();
+    dozerMapper.map(dest, resDTO);
+    return new GdnRestSingleResponse<>(resDTO, requestId);
   }
 
-  @RequestMapping(value = "updating mahasiswa", method = RequestMethod.POST,
+  @RequestMapping(value = "updatingMahasiswa", method = RequestMethod.POST,
       produces = {MediaType.APPLICATION_XML_VALUE},
       consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
   @ApiOperation(value = "update mahasiswa dengan id value",
@@ -172,7 +184,7 @@ public class MahasiswaController {
   @ResponseBody
   public GdnRestSingleResponse<MahasiswaDTO> updateMahasiswa(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-      @RequestParam Integer id, @RequestBody Mahasiswa mahasiswaIn) {
+      @RequestParam String id, @RequestBody Mahasiswa mahasiswaIn) {
     final Mahasiswa mahasiswa = this.simpleCRUD.findMahasiswaById(id);
     mahasiswa.setNama(mahasiswaIn.getNama());
     mahasiswa.setNpm(mahasiswaIn.getNpm());

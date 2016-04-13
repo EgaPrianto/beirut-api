@@ -14,6 +14,7 @@ import com.ega.entities.MataKuliah;
  *
  * @author Ega Prianto
  */
-public interface MataKuliahDao extends JpaRepository<MataKuliah, Integer> {
+public interface MataKuliahDao extends JpaRepository<MataKuliah, String> {
   public List<MataKuliah> findByNama(String name);
+
 }

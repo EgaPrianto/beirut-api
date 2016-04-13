@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ega.dto.MahasiswaDTO;
-import com.ega.dto.MataKuliahDTO;
+import com.ega.dto.response.MahasiswaDTO;
+import com.ega.dto.response.MataKuliahDTO;
 import com.ega.entities.Mahasiswa;
 import com.ega.entities.MataKuliah;
 import com.ega.services.SimpleCRUD;
@@ -37,7 +37,7 @@ public class MatakuliahController {
   @ResponseBody
   public GdnRestSingleResponse<MataKuliahDTO> deleteMataKuliahByID(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-      @RequestParam int id) {
+      @RequestParam String id) {
     MataKuliah deleted = simpleCRUD.deleteMataKuliahById(id);
     return new GdnRestSingleResponse<MataKuliahDTO>(MKToDTOConvert(deleted), requestId);
   }
@@ -48,7 +48,7 @@ public class MatakuliahController {
   @ResponseBody
   public GdnRestSingleResponse<MataKuliahDTO> findMataKuliahById(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-      @RequestParam int id) {
+      @RequestParam String id) {
     final MataKuliah mataKuliah = simpleCRUD.findMataKuliahById(id);
     final MataKuliahDTO newDTO = MKToDTOConvert(mataKuliah);
     return new GdnRestSingleResponse<>(newDTO, requestId);
@@ -79,7 +79,6 @@ public class MatakuliahController {
   private MataKuliahDTO MKToDTOConvert(MataKuliah in) {
     MataKuliahDTO res = new MataKuliahDTO();
     res.setKode(in.getKode());
-    res.setMahasiswa(MahasiswaToDTOConvert(in.getMahasiswa()));
     res.setNama(in.getNama());
     res.setNamaDosen(in.getNamaDosen());
     return res;
@@ -93,7 +92,7 @@ public class MatakuliahController {
   @ResponseBody
   public GdnRestSingleResponse<MataKuliahDTO> updateMataKuliah(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-      @RequestBody MataKuliah newMK, @RequestParam int id) {
+      @RequestBody MataKuliah newMK, @RequestParam String id) {
     MataKuliah oldMK = this.simpleCRUD.findMataKuliahById(id);
     oldMK.setKode(newMK.getKode());
     oldMK.setMahasiswa(newMK.getMahasiswa());

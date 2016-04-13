@@ -7,17 +7,17 @@ import com.ega.entities.MataKuliah;
 
 public interface SimpleCRUD {
 
-  Mahasiswa deleteMahasiswaById(int id);
+  Mahasiswa deleteMahasiswaById(String id);
 
-  MataKuliah deleteMataKuliahById(int id);
+  MataKuliah deleteMataKuliahById(String id);
 
-  Mahasiswa findMahasiswaById(int id);
+  Mahasiswa findMahasiswaById(String id);
 
   List<Mahasiswa> findMahasiswaByNama(String nama);
 
-  Mahasiswa findMahasiswaDetail(int id);
+  Mahasiswa findMahasiswaDetail(String id);
 
-  MataKuliah findMataKuliahById(int id);
+  MataKuliah findMataKuliahById(String id);
 
   List<MataKuliah> findMataKuliahByNama(String nama);
 

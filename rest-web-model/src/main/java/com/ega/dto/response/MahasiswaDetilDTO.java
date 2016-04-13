@@ -1,4 +1,4 @@
-package com.ega.dto;
+package com.ega.dto.response;
 
 public class MahasiswaDetilDTO extends MahasiswaDTO {
   private MataKuliahDTO[] setMataKuliah;

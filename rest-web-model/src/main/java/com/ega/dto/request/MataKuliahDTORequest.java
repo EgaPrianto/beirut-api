@@ -1,28 +1,16 @@
-package com.ega.dto;
+package com.ega.dto.request;
 
-import com.gdn.common.web.base.BaseResponse;
+import com.gdn.common.web.base.BaseRequest;
 
-public class MataKuliahDTO extends BaseResponse {
-  private String id;
-
+public class MataKuliahDTORequest extends BaseRequest {
   private String nama;
 
   private String kode;
 
   private String namaDosen;
 
-  private MahasiswaDTO mahasiswa;
-
-  public String getId() {
-    return id;
-  }
-
   public String getKode() {
     return kode;
-  }
-
-  public MahasiswaDTO getMahasiswa() {
-    return mahasiswa;
   }
 
   public String getNama() {
@@ -33,16 +21,8 @@ public class MataKuliahDTO extends BaseResponse {
     return namaDosen;
   }
 
-  public void setId(String id) {
-    this.id = id;
-  }
-
   public void setKode(String kode) {
     this.kode = kode;
-  }
-
-  public void setMahasiswa(MahasiswaDTO mahasiswa) {
-    this.mahasiswa = mahasiswa;
   }
 
   public void setNama(String nama) {

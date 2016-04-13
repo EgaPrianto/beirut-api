@@ -14,6 +14,6 @@ import com.ega.entities.Mahasiswa;
  *
  * @author Ega Prianto
  */
-public interface MahasiswaDao extends JpaRepository<Mahasiswa, Integer> {
+public interface MahasiswaDao extends JpaRepository<Mahasiswa, String> {
   List<Mahasiswa> findByNama(String name);
 }

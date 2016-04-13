@@ -13,10 +13,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  *
@@ -29,8 +30,10 @@ public class Mahasiswa implements Serializable {
   private static final long serialVersionUID = -8990289988119348524L;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Integer id;
+  // @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(generator = "system-uuid")
+  @GenericGenerator(name = "system-uuid", strategy = "uuid2")
+  private String id;
 
   @Column(name = "Nama_Mahasiswa")
   private String nama;
@@ -40,18 +43,18 @@ public class Mahasiswa implements Serializable {
 
   @Column(name = "MataKuliah_Mahasiswa")
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "mahasiswa")
-  private Set<MataKuliah> mataKuliah = new HashSet<MataKuliah>();
+  private Set<MataKuliah> mataKuliahs = new HashSet<MataKuliah>();
 
   public Mahasiswa() {
     // nothing to do here
   }
 
-  public Integer getId() {
+  public String getId() {
     return id;
   }
 
-  public Set<MataKuliah> getMataKuliah() {
-    return mataKuliah;
+  public Set<MataKuliah> getMataKuliahs() {
+    return mataKuliahs;
   }
 
   public String getNama() {
@@ -62,12 +65,12 @@ public class Mahasiswa implements Serializable {
     return npm;
   }
 
-  public void setId(Integer id) {
+  public void setId(String id) {
     this.id = id;
   }
 
   public void setMataKuliah(Set<MataKuliah> mataKuliah) {
-    this.mataKuliah = mataKuliah;
+    this.mataKuliahs = mataKuliah;
   }
 
   public void setNama(String nama) {
