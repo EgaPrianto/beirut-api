@@ -2,7 +2,7 @@ package com.ega.dto.response;
 
 import com.gdn.common.web.base.BaseResponse;
 
-public class MahasiswaDTO extends BaseResponse {
+public class MahasiswaDTOResponse extends BaseResponse {
 
   private String primaryKey;
 

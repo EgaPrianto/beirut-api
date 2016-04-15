@@ -69,8 +69,8 @@ public class Mahasiswa implements Serializable {
     this.id = id;
   }
 
-  public void setMataKuliah(Set<MataKuliah> mataKuliah) {
-    this.mataKuliahs = mataKuliah;
+  public void setMataKuliahs(Set<MataKuliah> mataKuliahs) {
+    this.mataKuliahs = mataKuliahs;
   }
 
   public void setNama(String nama) {

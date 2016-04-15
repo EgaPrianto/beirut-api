@@ -84,7 +84,11 @@
     <appender-ref ref="orm" />
   </logger>
 
-  <root level="info">
+<!--   <root level="info"> -->
+<!--     <appender-ref ref="stdout" /> -->
+<!--     <appender-ref ref="all" /> -->
+<!--   </root> -->
+  <root level="error">
     <appender-ref ref="stdout" />
     <appender-ref ref="all" />
   </root>

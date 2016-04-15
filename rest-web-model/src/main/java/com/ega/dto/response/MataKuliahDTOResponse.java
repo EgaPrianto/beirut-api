@@ -2,7 +2,7 @@ package com.ega.dto.response;
 
 import com.gdn.common.web.base.BaseResponse;
 
-public class MataKuliahDTO extends BaseResponse {
+public class MataKuliahDTOResponse extends BaseResponse {
   private String id;
 
   private String nama;
