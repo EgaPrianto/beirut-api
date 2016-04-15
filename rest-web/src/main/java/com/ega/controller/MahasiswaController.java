@@ -3,6 +3,7 @@ package com.ega.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -30,7 +31,8 @@ public class MahasiswaController {
 
   @Autowired
   private SimpleCRUD simpleCRUD;
-  // private ObjectMapper mapper;
+  @Autowired
+  private Mapper dozerMapper;
 
 
   @RequestMapping(value = "deleteMahasiswa", method = RequestMethod.POST)
@@ -42,7 +44,7 @@ public class MahasiswaController {
       @RequestParam String requestId, @RequestParam String id) {
     final Mahasiswa deleted = this.simpleCRUD.deleteMahasiswaById(id);
     final MahasiswaDTOResponse deletedMahasiswaDTO = new MahasiswaDTOResponse();
-    MahasiswaMapper.map(deleted, deletedMahasiswaDTO);
+    MahasiswaMapper.map(dozerMapper, deleted, deletedMahasiswaDTO);
     final GdnRestSingleResponse<MahasiswaDTOResponse> gdnDeletedMahasiswa =
         new GdnRestSingleResponse<>(deletedMahasiswaDTO, requestId);
     return gdnDeletedMahasiswa;
@@ -58,7 +60,7 @@ public class MahasiswaController {
       @RequestParam String id) {
     final Mahasiswa mahasiswa = simpleCRUD.findMahasiswaById(id);
     final MahasiswaDTOResponse newDTO = new MahasiswaDTOResponse();
-    MahasiswaMapper.map(mahasiswa, newDTO);
+    MahasiswaMapper.map(dozerMapper, mahasiswa, newDTO);
     return new GdnRestSingleResponse<MahasiswaDTOResponse>(newDTO, requestId);
   }
 
@@ -74,7 +76,7 @@ public class MahasiswaController {
     final List<MahasiswaDTOResponse> mahasiswaDTOResponse = new ArrayList<>();
     for (Mahasiswa mahasiswa2 : mahasiswa) {
       MahasiswaDTOResponse res = new MahasiswaDTOResponse();
-      MahasiswaMapper.map(mahasiswa2, res);
+      MahasiswaMapper.map(dozerMapper, mahasiswa2, res);
       mahasiswaDTOResponse.add(res);
     }
     return new GdnRestListResponse<>(mahasiswaDTOResponse,
@@ -91,7 +93,7 @@ public class MahasiswaController {
       @RequestParam String requestId, @RequestParam(required = true) String id) {
     Mahasiswa mahasiswa = simpleCRUD.findMahasiswaDetail(id);
     MahasiswaDetilDTOResponse newDTO = new MahasiswaDetilDTOResponse();
-    MahasiswaMapper.map(mahasiswa, newDTO);
+    MahasiswaMapper.map(dozerMapper, mahasiswa, newDTO);
     return new GdnRestSingleResponse<MahasiswaDetilDTOResponse>(newDTO, requestId);
   }
 
@@ -105,7 +107,7 @@ public class MahasiswaController {
     final List<MahasiswaDTOResponse> listDTO = new ArrayList<MahasiswaDTOResponse>();
     for (final Mahasiswa mahasiswa : simpleCRUD.getAllMahasiswa()) {
       final MahasiswaDTOResponse newDTO = new MahasiswaDTOResponse();
-      MahasiswaMapper.map(mahasiswa, newDTO);
+      MahasiswaMapper.map(dozerMapper, mahasiswa, newDTO);
       listDTO.add(newDTO);
     }
     return new GdnRestListResponse<MahasiswaDTOResponse>(listDTO,
@@ -122,7 +124,7 @@ public class MahasiswaController {
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
       @RequestBody MahasiswaDTORequest newMahasiswa) {
     Mahasiswa dest = new Mahasiswa();
-    MahasiswaMapper.map(newMahasiswa, dest);
+    MahasiswaMapper.map(dozerMapper, newMahasiswa, dest);
     this.simpleCRUD.saveMahasiswa(dest);
     MahasiswaDTOResponse resDTO = new MahasiswaDTOResponse();
     return new GdnRestSingleResponse<>(resDTO, requestId);
@@ -138,10 +140,10 @@ public class MahasiswaController {
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
       @RequestParam String id, @RequestBody MahasiswaDTORequest mahasiswaIn) {
     final Mahasiswa mahasiswa = this.simpleCRUD.findMahasiswaById(id);
-    MahasiswaMapper.map(mahasiswaIn, mahasiswa);
+    MahasiswaMapper.map(dozerMapper, mahasiswaIn, mahasiswa);
     this.simpleCRUD.saveMahasiswa(mahasiswa);
     final MahasiswaDTOResponse updatedMahasiswaDTO = new MahasiswaDTOResponse();
-    MahasiswaMapper.map(mahasiswa, updatedMahasiswaDTO);
+    MahasiswaMapper.map(dozerMapper, mahasiswa, updatedMahasiswaDTO);
     final GdnRestSingleResponse<MahasiswaDTOResponse> gdnUpdatedMahasiswa =
         new GdnRestSingleResponse<>(updatedMahasiswaDTO, requestId);
     return gdnUpdatedMahasiswa;
