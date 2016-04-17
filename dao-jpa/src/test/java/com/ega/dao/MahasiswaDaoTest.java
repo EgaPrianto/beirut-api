@@ -36,6 +36,7 @@ public class MahasiswaDaoTest {
       newMas.setNpm("2013730047" + i);
       Set<MataKuliah> mataKuliahs = new HashSet<>();
       for (int k = 0; k < 3; k++) {
+        MataKuliah newMK = new MataKuliah("1");
         newMK.setKode("AIF" + k);
         newMK.setMahasiswa(newMas);
         newMK.setNama("ProSI" + k);
