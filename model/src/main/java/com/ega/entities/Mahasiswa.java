@@ -4,7 +4,6 @@
  */
 package com.ega.entities;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,11 +12,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.gdn.common.base.entity.GdnBaseEntity;
 
 /**
  *
@@ -25,15 +25,14 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @Table(name = "Mahasiswa")
-public class Mahasiswa implements Serializable {
+public class Mahasiswa extends GdnBaseEntity {
 
   private static final long serialVersionUID = -8990289988119348524L;
 
-  @Id
-  // @GeneratedValue(strategy = GenerationType.AUTO)
-  @GeneratedValue(generator = "system-uuid")
-  @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-  private String id;
+//  // @GeneratedValue(strategy = GenerationType.AUTO)
+//  @GeneratedValue(generator = "system-uuid")
+//  @GenericGenerator(name = "system-uuid", strategy = "uuid2")
+//  private String id;
 
   @Column(name = "Nama_Mahasiswa")
   private String nama;
@@ -45,13 +44,10 @@ public class Mahasiswa implements Serializable {
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "mahasiswa")
   private Set<MataKuliah> mataKuliahs = new HashSet<MataKuliah>();
 
-  public Mahasiswa() {
-    // nothing to do here
+  public Mahasiswa(String storeId) {
+    this.setStoreId(storeId);
   }
 
-  public String getId() {
-    return id;
-  }
 
   public Set<MataKuliah> getMataKuliahs() {
     return mataKuliahs;
@@ -65,9 +61,6 @@ public class Mahasiswa implements Serializable {
     return npm;
   }
 
-  public void setId(String id) {
-    this.id = id;
-  }
 
   public void setMataKuliahs(Set<MataKuliah> mataKuliahs) {
     this.mataKuliahs = mataKuliahs;

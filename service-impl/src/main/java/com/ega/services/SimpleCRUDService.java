@@ -95,6 +95,7 @@ public class SimpleCRUDService implements SimpleCRUD {
 
 
   @Override
+  @Transactional(readOnly = false)
   public void saveMataKuliah(MataKuliah mataKuliah) {
     this.mataKuliahDao.save(mataKuliah);
 

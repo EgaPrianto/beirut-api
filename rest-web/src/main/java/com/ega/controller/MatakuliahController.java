@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ega.dto.request.MataKuliahDTORequest;
-import com.ega.dto.response.MahasiswaDTOResponse;
 import com.ega.dto.response.MataKuliahDTOResponse;
-import com.ega.entities.Mahasiswa;
 import com.ega.entities.MataKuliah;
 import com.ega.services.SimpleCRUD;
 import com.gdn.common.web.wrapper.response.GdnRestListResponse;
@@ -41,7 +39,7 @@ public class MatakuliahController {
   @ResponseBody
   public GdnRestSingleResponse<MataKuliahDTOResponse> deleteMataKuliahByID(
       @RequestParam String storeId, @RequestParam String channelId, @RequestParam String clientId,
-      @RequestParam String requestId, @RequestParam String id) {
+      @RequestParam String requestId, @RequestParam String username, @RequestParam String id) {
     MataKuliah deleted = simpleCRUD.deleteMataKuliahById(id);
     MataKuliahDTOResponse delDTO = new MataKuliahDTOResponse();
     dozerMapper.map(deleted, delDTO);
@@ -54,7 +52,7 @@ public class MatakuliahController {
   @ResponseBody
   public GdnRestSingleResponse<MataKuliahDTOResponse> findMataKuliahById(
       @RequestParam String storeId, @RequestParam String channelId, @RequestParam String clientId,
-      @RequestParam String requestId, @RequestParam String id) {
+      @RequestParam String requestId, @RequestParam String username, @RequestParam String id) {
     final MataKuliah mataKuliah = simpleCRUD.findMataKuliahById(id);
     MataKuliahDTOResponse newDTO = new MataKuliahDTOResponse();
     dozerMapper.map(mataKuliah, newDTO);
@@ -67,7 +65,7 @@ public class MatakuliahController {
   @ResponseBody
   public GdnRestListResponse<MataKuliahDTOResponse> findMataKuliahByNama(
       @RequestParam String storeId, @RequestParam String channelId, @RequestParam String clientId,
-      @RequestParam String requestId, @RequestParam String nama) {
+      @RequestParam String requestId, @RequestParam String username, @RequestParam String nama) {
     final List<MataKuliah> mataKuliah = simpleCRUD.findMataKuliahByNama(nama);
     final List<MataKuliahDTOResponse> newDTO = new ArrayList<>();
     for (MataKuliah mataKuliah2 : mataKuliah) {
@@ -78,21 +76,6 @@ public class MatakuliahController {
     return new GdnRestListResponse<>(newDTO, new PageMetaData(50, 0, newDTO.size()), requestId);
   }
 
-  private MahasiswaDTOResponse MahasiswaToDTOConvert(Mahasiswa in) {
-    MahasiswaDTOResponse res = new MahasiswaDTOResponse();
-    res.setNama(in.getNama());
-    res.setNpm(in.getNpm());
-    return res;
-  }
-
-  private MataKuliahDTOResponse MKToDTOConvert(MataKuliah in) {
-    MataKuliahDTOResponse res = new MataKuliahDTOResponse();
-    res.setKode(in.getKode());
-    res.setNama(in.getNama());
-    res.setNamaDosen(in.getNamaDosen());
-    return res;
-  }
-
   @RequestMapping(value = "updateMataKuliah/", method = RequestMethod.POST,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
       consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -101,7 +84,8 @@ public class MatakuliahController {
   @ResponseBody
   public GdnRestSingleResponse<MataKuliahDTOResponse> updateMataKuliah(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-      @RequestBody MataKuliahDTORequest newMK, @RequestParam String id) {
+      @RequestParam String username, @RequestBody MataKuliahDTORequest newMK,
+      @RequestParam String id) {
     MataKuliah oldMK = this.simpleCRUD.findMataKuliahById(id);
     dozerMapper.map(newMK, oldMK);
     this.simpleCRUD.saveMataKuliah(oldMK);

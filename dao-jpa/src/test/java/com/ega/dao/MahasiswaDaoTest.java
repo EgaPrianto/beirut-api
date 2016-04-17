@@ -31,12 +31,11 @@ public class MahasiswaDaoTest {
   @Before
   public void initialize() throws Exception {
     for (int i = 0; i < 10; i++) {
-      Mahasiswa newMas = new Mahasiswa();
+      Mahasiswa newMas = new Mahasiswa("1");
       newMas.setNama("Ega Prianto" + i);
       newMas.setNpm("2013730047" + i);
       Set<MataKuliah> mataKuliahs = new HashSet<>();
       for (int k = 0; k < 3; k++) {
-        MataKuliah newMK = new MataKuliah();
         newMK.setKode("AIF" + k);
         newMK.setMahasiswa(newMas);
         newMK.setNama("ProSI" + k);

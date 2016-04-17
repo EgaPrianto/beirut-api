@@ -41,7 +41,7 @@ public class MahasiswaController {
   @ResponseBody
   public GdnRestSingleResponse<MahasiswaDTOResponse> deleteMahasiswaById(
       @RequestParam String storeId, @RequestParam String channelId, @RequestParam String clientId,
-      @RequestParam String requestId, @RequestParam String id) {
+      @RequestParam String requestId, @RequestParam(required = false) String username, @RequestParam String id) {
     final Mahasiswa deleted = this.simpleCRUD.deleteMahasiswaById(id);
     final MahasiswaDTOResponse deletedMahasiswaDTO = new MahasiswaDTOResponse();
     MahasiswaMapper.map(dozerMapper, deleted, deletedMahasiswaDTO);
@@ -57,7 +57,7 @@ public class MahasiswaController {
   @ResponseBody
   public GdnRestSingleResponse<MahasiswaDTOResponse> findMahasiswaById(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-      @RequestParam String id) {
+      @RequestParam(required = false) String username, @RequestParam String id) {
     final Mahasiswa mahasiswa = simpleCRUD.findMahasiswaById(id);
     final MahasiswaDTOResponse newDTO = new MahasiswaDTOResponse();
     MahasiswaMapper.map(dozerMapper, mahasiswa, newDTO);
@@ -71,7 +71,7 @@ public class MahasiswaController {
   @ResponseBody
   public GdnRestListResponse<MahasiswaDTOResponse> findMahasiswaByNama(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-      @RequestBody String nama) {
+      @RequestParam(required = false) String username, @RequestBody String nama) {
     final List<Mahasiswa> mahasiswa = simpleCRUD.findMahasiswaByNama(nama);
     final List<MahasiswaDTOResponse> mahasiswaDTOResponse = new ArrayList<>();
     for (Mahasiswa mahasiswa2 : mahasiswa) {
@@ -90,7 +90,8 @@ public class MahasiswaController {
   @ResponseBody
   public GdnRestSingleResponse<MahasiswaDetilDTOResponse> findMahasiswaDetail(
       @RequestParam String storeId, @RequestParam String channelId, @RequestParam String clientId,
-      @RequestParam String requestId, @RequestParam(required = true) String id) {
+      @RequestParam String requestId, @RequestParam(required = false) String username,
+      @RequestParam(required = true) String id) {
     Mahasiswa mahasiswa = simpleCRUD.findMahasiswaDetail(id);
     MahasiswaDetilDTOResponse newDTO = new MahasiswaDetilDTOResponse();
     MahasiswaMapper.map(dozerMapper, mahasiswa, newDTO);
@@ -102,8 +103,8 @@ public class MahasiswaController {
   @ApiOperation(value = "Ambil semua mahasiswa", notes = "ambil semua mahasiswa yang ada")
   @ResponseBody
   public GdnRestListResponse<MahasiswaDTOResponse> getAllMahasiswa(@RequestParam String storeId,
-      @RequestParam String channelId, @RequestParam String clientId,
-      @RequestParam String requestId) {
+      @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
+      @RequestParam(required = false) String username) {
     final List<MahasiswaDTOResponse> listDTO = new ArrayList<MahasiswaDTOResponse>();
     for (final Mahasiswa mahasiswa : simpleCRUD.getAllMahasiswa()) {
       final MahasiswaDTOResponse newDTO = new MahasiswaDTOResponse();
@@ -122,8 +123,8 @@ public class MahasiswaController {
   @ResponseBody
   public GdnRestSingleResponse<MahasiswaDTOResponse> saveMahasiswa(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-      @RequestBody MahasiswaDTORequest newMahasiswa) {
-    Mahasiswa dest = new Mahasiswa();
+      @RequestParam(required = false) String username, @RequestBody MahasiswaDTORequest newMahasiswa) {
+    Mahasiswa dest = new Mahasiswa("1");
     MahasiswaMapper.map(dozerMapper, newMahasiswa, dest);
     this.simpleCRUD.saveMahasiswa(dest);
     MahasiswaDTOResponse resDTO = new MahasiswaDTOResponse();
@@ -138,7 +139,8 @@ public class MahasiswaController {
   @ResponseBody
   public GdnRestSingleResponse<MahasiswaDTOResponse> updateMahasiswa(@RequestParam String storeId,
       @RequestParam String channelId, @RequestParam String clientId, @RequestParam String requestId,
-      @RequestParam String id, @RequestBody MahasiswaDTORequest mahasiswaIn) {
+      @RequestParam String id, @RequestParam(required = false) String username,
+      @RequestBody MahasiswaDTORequest mahasiswaIn) {
     final Mahasiswa mahasiswa = this.simpleCRUD.findMahasiswaById(id);
     MahasiswaMapper.map(dozerMapper, mahasiswaIn, mahasiswa);
     this.simpleCRUD.saveMahasiswa(mahasiswa);

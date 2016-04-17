@@ -29,7 +29,7 @@ public class SimpleCRUDServiceTest {
   public void initialize() throws Exception {
     MockitoAnnotations.initMocks(this);
     // this.simpleCRUDService.getMahasiswaDao();
-    Mahasiswa tesMah = new Mahasiswa();
+    Mahasiswa tesMah = new Mahasiswa("0");
     tesMah.setNama("ega");
     when(this.mahasiswaDao.findOne("0")).thenReturn(tesMah);
   }
