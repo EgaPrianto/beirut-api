@@ -70,9 +70,15 @@ public class CandidateControllerTest {
   private final Candidate candidate = new Candidate();
   private final List<Candidate> candidates = new LinkedList<>();
   private final Page<Candidate> pageCandidate = new PageImpl(candidates, pageable, 10);
+<<<<<<< HEAD
+  private final Long start = (long) 14062016;
+  private final Long end = (long) 16062016;
+  private final String page = "1";
+=======
   private final Long start = (long) 1434323587;
   private final Long end = (long) 1465945987;
   private final String page = "0";
+>>>>>>> ce24c7ebcfa5f4dd9f18d352995446a91e383e52
   private final String size = "4";
 
   private final List<CandidateDTOResponse> candidateResponse = new ArrayList<>();
@@ -636,5 +642,4 @@ public class CandidateControllerTest {
     Mockito.verify(this.candidateService, Mockito.times(2)).updateCandidateStatusBulk(STORE_ID,
         idCandidates, idPosition, Status.APPLY);
   }
-
 }
