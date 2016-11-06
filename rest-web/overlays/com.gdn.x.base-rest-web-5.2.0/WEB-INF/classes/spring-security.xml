@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <beans:beans>
+      <http security="none"></http>
+    </beans:beans>
+    
+<!-- 
+
+    <context:property-placeholder location="file:///${API_CONF_DIR}db.properties" />
+    <global-method-security secured-annotations="enabled" />
+    
+    <beans:beans profile="dev">
+      <http auto-config="false" use-expressions="true" access-denied-page="/login.html" disable-url-rewriting="true">
+          <intercept-url pattern="/push/**" access="hasAnyRole('ROLE_SIVA_SUPER_USER,ROLE_SIVA_ANDROID_PUSH_NOTIFICATION')"/>
+          <intercept-url pattern="/css/**" access="permitAll"/>
+          <intercept-url pattern="/js/**" access="permitAll"/>
+          <intercept-url pattern="/img/**" access="permitAll"/>
+          <intercept-url pattern="/login" access="permitAll"/>
+          <intercept-url pattern="/login" access="permitAll"/>
+          <intercept-url pattern="/error.html" access="permitAll"/>
+          <intercept-url pattern="/404.htm" access="permitAll"/>
+          
+          <intercept-url pattern="/**" access="hasRole('IS_AUTHENTICATED_FULLY')"/>
+          
+          <form-login login-page="/login"
+                      username-parameter="username" password-parameter="password"
+                      authentication-success-handler-ref="loginSuccessRedirect"
+                      authentication-failure-url="/login?error=true" />
+          <logout delete-cookies="JSESSIONID" logout-url="/logout" success-handler-ref="logoutSuccessRedirect" />
+      </http>
+    </beans:beans>
+    
+    <beans:beans profile="uat,prod">
+      <beans:bean id="redisSecurityContextRepository" class="com.gdn.api.security.RedisSecurityContextRepository">
+        <beans:property name="cacheService" ref="cacheService"/>
+      </beans:bean>
+      <http auto-config="false" use-expressions="true" create-session="stateless" 
+        access-denied-page="/login" disable-url-rewriting="true" security-context-repository-ref="redisSecurityContextRepository">
+          <intercept-url pattern="/push/**" access="hasAnyRole('ROLE_SIVA_SUPER_USER,ROLE_SIVA_ANDROID_PUSH_NOTIFICATION')"/>
+          <intercept-url pattern="/css/**" access="permitAll"/>
+          <intercept-url pattern="/js/**" access="permitAll"/>
+          <intercept-url pattern="/img/**" access="permitAll"/>
+          <intercept-url pattern="/login" access="permitAll"/>
+          <intercept-url pattern="/error.html" access="permitAll"/>
+          <intercept-url pattern="/404.htm" access="permitAll"/>
+  
+          <intercept-url pattern="/**" access="hasRole('IS_AUTHENTICATED_FULLY')"/>
+          <form-login login-page="/login" username-parameter="username" password-parameter="password"
+                      authentication-success-handler-ref="loginSuccessRedirect"
+                      authentication-failure-url="/login?error=true" />
+          <logout delete-cookies="JSESSIONID,SC" logout-url="/logout" success-handler-ref="logoutSuccessRedirect" />
+      </http>
+    </beans:beans>
+    
+    <beans:beans profile="dev">
+      <beans:bean id="loginSuccessRedirect"
+                  class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+          <beans:property name="defaultTargetUrl" value="/home"></beans:property>
+      </beans:bean>
+  
+      <beans:bean id="logoutSuccessRedirect"
+                  class="org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler">
+          <beans:property name="defaultTargetUrl" value="/login"></beans:property>
+      </beans:bean>
+  
+      <beans:bean id="identityApiAuthenticationProvider" class="com.gdn.london.cms.identity.IdentityApiAuthenticationProvider"/>
+      <authentication-manager>
+          <authentication-provider ref="identityApiAuthenticationProvider" />
+      </authentication-manager>
+    </beans:beans>
+    
+    <beans:beans profile="uat,prod">
+      <beans:bean id="loginSuccessRedirect"
+                  class="com.gdn.siva.cms.authentication.RedisAuthenticationSuccessHandler">
+          <beans:property name="defaultTargetUrl" value="/home"></beans:property>
+      </beans:bean>
+  
+      <beans:bean id="logoutSuccessRedirect"
+                  class="com.gdn.siva.cms.authentication.RedisLogoutSuccessHandler">
+          <beans:property name="defaultTargetUrl" value="/login"></beans:property>
+      </beans:bean>
+  
+      <beans:bean id="identityApiAuthenticationProvider" class="com.gdn.london.cms.identity.IdentityApiAuthenticationProvider"/>
+      <authentication-manager>
+          <authentication-provider ref="identityApiAuthenticationProvider" />
+      </authentication-manager>
+    </beans:beans>
+    
+     -->
+</beans:beans>

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:util="http://www.springframework.org/schema/util" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:cache="http://www.springframework.org/schema/cache"
+  xmlns:metrics="http://www.ryantenney.com/schema/metrics"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+        http://www.ryantenney.com/schema/metrics http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd
+        http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+  <context:annotation-config />
+
+  <import resource="classpath*:gdn-project-context.xml" />
+
+  <util:properties id="applicationDefaultProperties">
+    <prop key="transactionManager.defaultTimeout">30</prop>
+
+    <prop key="dataSource.driverClassName">org.h2.Driver</prop>
+    <prop key="dataSource.url">jdbc:h2:mem:resthub;DB_CLOSE_DELAY=-1;MVCC=TRUE</prop>
+    <prop key="dataSource.username">sa</prop>
+    <prop key="dataSource.password"></prop>
+    <prop key="dataSource.removeAbandoned">true</prop>
+    <prop key="dataSource.logAbandoned">true</prop>
+    <prop key="dataSource.removeAbandonedTimeout">60</prop>
+    <prop key="dataSource.maxActive">100</prop>
+    <prop key="dataSource.maxIdle">100</prop>
+    <prop key="dataSource.maxWait">30000</prop>
+    
+    <prop key="dataSource.minConnectionsPerPartition">2</prop>
+    <prop key="dataSource.maxConnectionsPerPartition">4</prop>
+    <prop key="dataSource.partitionCount">3</prop>
+    <prop key="dataSource.idleConnectionTestPeriodInSeconds">60</prop>
+    <prop key="dataSource.statementsCacheSize">100</prop>
+    <prop key="dataSource.connectionTestStatement">/* ping*/ SELECT 1</prop>
+    <prop key="dataSource.defaultAutoCommit">false</prop>
+    <prop key="dataSource.testWhileIdle">true</prop>
+    <prop key="dataSource.testOnReturn">true</prop>
+    <prop key="dataSource.testOnBorrow">true</prop>
+    <prop key="dataSource.validationQuery">select 1</prop>
+    <prop key="dataSource.validationQueryTimeout">5</prop>
+    <prop key="dataSource.rollbackOnReturn">true</prop>
+    <prop key="dataSource.logValidationErrors">true</prop>
+    
+    <prop key="dataSource.mongo.host">localhost</prop>
+    <prop key="dataSource.mongo.port">27017</prop>
+    <prop key="dataSource.mongo.replicaSet"></prop>
+    <prop key="dataSource.mongo.databaseName">test</prop>
+    <prop key="dataSource.mongo.username">test</prop>
+    <prop key="dataSource.mongo.password">test</prop>
+    <prop key="dataSource.mongo.connection-per-host">8</prop>
+    <prop key="dataSource.mongo.threads-allowed-to-block-for-connection-multiplier">4</prop>
+    <prop key="dataSource.mongo.connect-timeout">1000</prop>
+    <prop key="dataSource.mongo.max-wait-time">1500</prop>
+    <prop key="dataSource.mongo.auto-connect-retry">true</prop>
+    <prop key="dataSource.mongo.socket-keep-alive">true</prop>
+    <prop key="dataSource.mongo.socket-timeout">1500</prop>
+    <prop key="dataSource.mongo.slave-ok">true</prop>
+    <prop key="dataSource.mongo.write-number">1</prop>
+    <prop key="dataSource.mongo.write-timeout">0</prop>
+    <prop key="dataSource.mongo.write-fsync">true</prop>
+    
+    <prop key="hibernate.show_sql">false</prop>
+    <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+    <prop key="hibernate.format_sql">true</prop>
+    <prop key="hibernate.hbm2ddl.auto">update</prop>
+    <prop key="hibernate.cache.use_second_level_cache">true</prop>
+    <prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheRegionFactory</prop>
+    <prop key="hibernate.id.new_generator_mappings">true</prop>
+
+    <prop key="persistenceUnit.packagesToScan"></prop>
+
+    <prop key="redis.hostName">localhost</prop>
+    <prop key="redis.port">6379</prop>
+    <prop key="redis.timeout">2000</prop>
+    <prop key="redis.usePool">true</prop>
+    <prop key="redis.password"></prop>
+    <prop key="redis.database">0</prop>
+    <prop key="redis.pool.minIdle">150</prop>
+    <prop key="redis.pool.maxIdle">150</prop>
+    <prop key="redis.pool.maxTotal">150</prop>
+    <prop key="redis.pool.maxWaitMillis">10000</prop>
+    <prop key="redis.pool.evictionPolicyClassName">org.apache.commons.pool2.impl.DefaultEvictionPolicy</prop>
+    <prop key="redis.pool.blockWhenExhausted">true</prop>
+    <prop key="redis.pool.testOnBorrow">true</prop>
+    <prop key="redis.pool.lifo">true</prop>
+    <prop key="redis.pool.minEvictableIdleTimeMillis">60000</prop>
+    <prop key="redis.pool.softMinEvictableIdleTimeMillis">1800000</prop>
+    <prop key="redis.pool.numTestsPerEvictionRun">-1</prop>
+    <prop key="redis.pool.testOnReturn">false</prop>
+    <prop key="redis.pool.testWhileIdle">true</prop>
+    <prop key="redis.pool.timeBetweenEvictionRunsMillis">30000</prop>
+    <prop key="redis.pool.jmxEnabled">true</prop>
+    <prop key="redis.pool.jmxNamePrefix">pool</prop>
+    <prop key="redis.cache.defaultExpiration">86400</prop>
+    <prop key="redis.cache.usePrefix">true</prop>
+    <prop key="redis.serializer">defaultRedisSerializer</prop>
+
+    <prop key="solr.url">http://localhost:8983/solr/</prop>
+    <prop key="solr.timeout">2000</prop>
+    <prop key="solr.max.connections">100</prop>
+
+    <prop key="domainEvent.publisher.broker.list">localhost:9092,localhost:9093</prop>
+    <prop key="domainEvent.publisher.poller.fixed.delay">1000</prop>
+    <prop key="domainEvent.publisher.poller.receive.timeout">0</prop>
+    <prop key="domainEvent.publisher.outbound.channel.order">1</prop>
+    <prop key="domainEvent.publisher.queue.buffering.max.ms">500</prop>
+    <prop key="domainEvent.publisher.topic.metadata.refresh.interval.ms">3600000</prop>
+    <prop key="domainEvent.publisher.queue.buffering.max.messages">10000</prop>
+    <prop key="domainEvent.publisher.retry.backoff.ms">100</prop>
+    <prop key="domainEvent.publisher.message.send.max.retries">2</prop>
+    <prop key="domainEvent.publisher.send.buffer.bytes">5242880</prop>
+    <prop key="domainEvent.publisher.socket.request.max.bytes">104857600</prop>
+    <prop key="domainEvent.publisher.socket.receive.buffer.bytes">1048576</prop>
+    <prop key="domainEvent.publisher.socket.send.buffer.bytes">1048576</prop>
+    <prop key="domainEvent.publisher.request.required.acks">1</prop>
+    <prop key="domainEvent.publisher.executor.pool.size">50</prop>
+    <prop key="domainEvent.publisher.executor.keep.alive">120</prop>
+    <prop key="domainEvent.publisher.executor.queue.capacity">300</prop>
+
+    <prop key="domainEvent.subscriber.zookeeper.list">localhost:2181,localhost:2182</prop>
+    <prop key="domainEvent.subscriber.zookeeper.connection.timeout">6000</prop>
+    <prop key="domainEvent.subscriber.zookeeper.session.timeout">6000</prop>
+    <prop key="domainEvent.subscriber.zookeeper.sync.time">2000</prop>
+    <prop key="domainEvent.subscriber.poller.fixed.delay">100</prop>
+    <prop key="domainEvent.subscriber.poller.max.message">10</prop>
+    <prop key="domainEvent.subscriber.consumer.timeout">5000</prop>
+    <prop key="domainEvent.subscriber.consumer.max.message">5000</prop>
+    <prop key="domainEvent.subscriber.auto.offset.reset">smallest</prop>
+    <prop key="domainEvent.subscriber.socket.receive.buffer.bytes">10485760</prop>
+    <prop key="domainEvent.subscriber.fetch.message.max.bytes">5242880</prop>
+    <prop key="domainEvent.subscriber.auto.commit.interval.ms">1000</prop>
+    <prop key="domainEvent.subscriber.executor.pool.size">50</prop>
+    <prop key="domainEvent.subscriber.executor.keep.alive">120</prop>
+    <prop key="domainEvent.subscriber.executor.queue.capacity">300</prop>
+    <prop key="domainEvent.subscriber.message.interceptor">defaultMessageInterceptor</prop>
+  
+    <prop key="orika.field.map.using.annotation">false</prop>
+  </util:properties>
+
+  <bean id="webApplicationPropertyHolder" class="com.gdn.x.base.WebApplicationPropertyHolder">
+    <property name="basePathLocation" value="${application.base.path.location}" />
+  </bean>
+
+  <tx:annotation-driven />
+ 
+  <bean id="keyGenerator" class="com.gdn.common.base.cache.HashBasedKeyGenerator" />
+
+  <bean id="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+
+  <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+    <property name="hostName" value="${redis.hostName}" />
+    <property name="port" value="${redis.port}" />
+    <property name="timeout" value="${redis.timeout}" />
+    <property name="usePool" value="${redis.usePool}" />
+    <property name="password" value="${redis.password}" />
+    <property name="poolConfig" ref="redisPoolConfig" />
+    <property name="database" value="${redis.database}" />
+  </bean>
+
+  <bean id="redisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+    <property name="minIdle" value="${redis.pool.minIdle}" />
+    <property name="maxIdle" value="${redis.pool.maxIdle}" />
+    <property name="maxTotal" value="${redis.pool.maxTotal}" />
+    <property name="maxWaitMillis" value="${redis.pool.maxWaitMillis}" />
+    <property name="evictionPolicyClassName" value="${redis.pool.evictionPolicyClassName}" />
+    <property name="blockWhenExhausted" value="${redis.pool.blockWhenExhausted}" />
+    <property name="testOnBorrow" value="${redis.pool.testOnBorrow}" />
+    <property name="lifo" value="${redis.pool.lifo}" />
+    <property name="minEvictableIdleTimeMillis" value="${redis.pool.minEvictableIdleTimeMillis}" />
+    <property name="softMinEvictableIdleTimeMillis" value="${redis.pool.softMinEvictableIdleTimeMillis}" />
+    <property name="numTestsPerEvictionRun" value="${redis.pool.numTestsPerEvictionRun}" />
+    <property name="testOnReturn" value="${redis.pool.testOnReturn}" />
+    <property name="testWhileIdle" value="${redis.pool.testWhileIdle}" />
+    <property name="timeBetweenEvictionRunsMillis" value="${redis.pool.timeBetweenEvictionRunsMillis}" />
+    <property name="jmxEnabled" value="${redis.pool.jmxEnabled}" />
+    <property name="jmxNamePrefix" value="${redis.pool.jmxNamePrefix}" />
+  </bean>
+
+  <!-- redis template definition -->
+  <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+    <property name="connectionFactory" ref="jedisConnectionFactory" />
+    <property name="keySerializer" ref="stringRedisSerializer" />
+    <property name="valueSerializer" ref="${redis.serializer}" />
+  </bean>
+
+  <bean id="defaultRedisSerializer" class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
+
+  <bean id="kryoSerializer" class="com.gdn.x.base.serializer.KryoSerializer" />
+  
+  <bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+    <property name="connectionFactory" ref="jedisConnectionFactory" />
+    <property name="keySerializer" ref="stringRedisSerializer" />
+  </bean>
+
+  <!-- declare Redis Cache Manager -->
+  <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
+    <constructor-arg index="0" type="org.springframework.data.redis.core.RedisTemplate" ref="redisTemplate" />
+    <property name="defaultExpiration" value="${redis.cache.defaultExpiration}" />
+    <property name="usePrefix" value="${redis.cache.usePrefix}" />
+  </bean>
+
+  <!-- Cache error handler -->
+  <bean id="simpleCacheErrorHandler" class="com.gdn.x.config.CacheErrorHandlerAsMiss" />
+  
+  <!-- Cache resolver -->
+  <bean id="simpleCacheResolver" class="org.springframework.cache.interceptor.SimpleCacheResolver">
+    <constructor-arg index="0" type="org.springframework.cache.CacheManager" ref="cacheManager" />
+  </bean>
+
+  <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper"/>
+
+  <metrics:metric-registry id="metric-registry" />
+
+  <metrics:health-check-registry id="health-check-registry" />
+
+  <metrics:annotation-driven health-check-registry="health-check-registry" metric-registry="metric-registry" />
+
+</beans>

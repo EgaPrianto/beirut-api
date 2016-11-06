@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context" 
+  xsi:schemaLocation="http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context.xsd
+          http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Configures HTTP Solr server -->
+	<bean id="solrServer" class="org.springframework.data.solr.server.support.HttpSolrServerFactoryBean">
+		<property name="url" value="${solr.url}"/>
+		<property name="timeout" value="${solr.timeout}"/>
+		<property name="maxConnections" value="${solr.max.connections}"/>
+	</bean>
+	
+	<bean id="solrServerFactory" class="org.springframework.data.solr.server.support.MulticoreSolrServerFactory">
+		<constructor-arg ref="solrServer" />
+    </bean>
+	
+    <!-- Configures Solr template -->
+    <bean class="com.gdn.common.bean.definition.registry.SolrTemplateBeanDefinitionRegistryProcessor">
+		<property name="solrDocumentBasePackage" value="classpath:solr-document.properties"/>
+    </bean>
+    
+    <bean id="healthCheckSolr" class="com.gdn.x.base.rest.web.healthcheck.HealthCheckSolr" />
+    
+</beans>

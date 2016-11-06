@@ -560,7 +560,7 @@ public class BeirutApiClientTest {
     Mockito.verify(closeableHttpClient, Mockito.times(1)).execute(httpPost);
     Mockito.verify(closableHttpResponse, Mockito.times(1)).getStatusLine();
     Mockito.verify(statusLine, Mockito.times(1)).getStatusCode();
-    Mockito.verify(closableHttpResponse, Mockito.times(1)).getEntity();
+//    Mockito.verify(closableHttpResponse, Mockito.times(1)).getEntity();
     Assert.assertTrue(response.isSuccess());
   }
 
@@ -607,7 +607,7 @@ public class BeirutApiClientTest {
     Mockito.verify(closeableHttpClient, Mockito.times(1)).execute(httpPost);
     Mockito.verify(closableHttpResponse, Mockito.times(1)).getStatusLine();
     Mockito.verify(statusLine, Mockito.times(1)).getStatusCode();
-    Mockito.verify(closableHttpResponse, Mockito.times(1)).getEntity();
+//    Mockito.verify(closableHttpResponse, Mockito.times(1)).getEntity();
     Assert.assertTrue(response.isSuccess());
   }
 
@@ -656,7 +656,7 @@ public class BeirutApiClientTest {
     Mockito.verify(closeableHttpClient, Mockito.times(1)).execute(httpPost);
     Mockito.verify(closableHttpResponse, Mockito.times(1)).getStatusLine();
     Mockito.verify(statusLine, Mockito.times(1)).getStatusCode();
-    Mockito.verify(closableHttpResponse, Mockito.times(1)).getEntity();
+//    Mockito.verify(closableHttpResponse, Mockito.times(1)).getEntity();
     Assert.assertTrue(response.isSuccess());
   }
 

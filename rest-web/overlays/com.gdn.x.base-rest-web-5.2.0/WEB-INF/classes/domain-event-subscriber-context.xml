@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:int="http://www.springframework.org/schema/integration" xmlns:int-kafka="http://www.springframework.org/schema/integration/kafka"
+  xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.2.xsd
+        http://www.springframework.org/schema/integration/kafka http://www.springframework.org/schema/integration/kafka/spring-integration-kafka.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+  
+  <int:channel id="inputFromKafka">
+    <int:dispatcher task-executor="kafkaMessageExecutor" />
+  </int:channel>
+  
+  <int-kafka:inbound-channel-adapter id="channelAdapter" kafka-consumer-context-ref="consumerContext"
+    auto-startup="false" channel="inputFromKafka">
+    <int:poller fixed-delay="${domainEvent.subscriber.poller.fixed.delay}" time-unit="MILLISECONDS"
+      max-messages-per-poll="${domainEvent.subscriber.poller.max.message}" />
+  </int-kafka:inbound-channel-adapter>
+  
+  <int-kafka:consumer-context id="consumerContext" 
+    consumer-timeout="${domainEvent.subscriber.consumer.timeout}"
+    zookeeper-connect="zookeeperConnect"
+    consumer-properties="consumerProperties">
+      <int-kafka:consumer-configurations>
+        <int-kafka:consumer-configuration group-id="${application.base.clientId}" value-decoder="valueDecoder"
+          key-decoder="valueDecoder" max-messages="${domainEvent.subscriber.consumer.max.message}">
+          <int-kafka:topic id="default-topic" streams="4" />
+        </int-kafka:consumer-configuration>
+      </int-kafka:consumer-configurations>
+  </int-kafka:consumer-context>
+  
+  <bean id="consumerProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="properties">
+      <props>
+        <prop key="auto.offset.reset">${domainEvent.subscriber.auto.offset.reset}</prop>
+        <prop key="socket.receive.buffer.bytes">${domainEvent.subscriber.socket.receive.buffer.bytes}</prop>
+        <prop key="fetch.message.max.bytes">${domainEvent.subscriber.fetch.message.max.bytes}</prop>
+        <prop key="auto.commit.interval.ms">${domainEvent.subscriber.auto.commit.interval.ms}</prop>
+      </props>
+    </property>
+  </bean>
+
+  <int:outbound-channel-adapter channel="inputFromKafka" ref="kafkaConsumer" method="onGetMessage" />
+
+  <bean id="kafkaConsumer" class="com.gdn.common.base.domainevent.subscriber.SubscribeDomainEventListener">
+    <constructor-arg index="0" ref="subscribeDomainEventMapper" />
+    <constructor-arg index="1" ref="objectMapperHelper" />
+    <constructor-arg index="2" ref="${domainEvent.subscriber.message.interceptor}" />
+  </bean>
+  
+  <bean id="defaultMessageInterceptor" class="com.gdn.common.base.domainevent.subscriber.DefaultMessageInterceptor" />
+  
+  <bean id="objectMapperHelper" class="com.gdn.common.base.domainevent.subscriber.ObjectMapperHelper" >
+    <constructor-arg index="0" ref="objectMapper"/>
+  </bean>
+  
+  <bean id="subscribeDomainEventMapper" class="com.gdn.common.base.domainevent.subscriber.SubscribeDomainEventMapper"
+    init-method="init" destroy-method="destroy">
+    <constructor-arg index="0" value="${application.base.clientId}" />
+    <constructor-arg index="1" ref="channelAdapter" />
+    <constructor-arg index="2" ref="consumerContext" />
+  </bean>
+
+  <int-kafka:zookeeper-connect id="zookeeperConnect"
+    zk-connect="${domainEvent.subscriber.zookeeper.list}"
+    zk-connection-timeout="${domainEvent.subscriber.zookeeper.connection.timeout}"
+    zk-session-timeout="${domainEvent.subscriber.zookeeper.session.timeout}"
+    zk-sync-time="${domainEvent.subscriber.zookeeper.sync.time}" />
+
+  <task:executor id="kafkaMessageExecutor" pool-size="${domainEvent.subscriber.executor.pool.size}"
+    keep-alive="${domainEvent.subscriber.executor.keep.alive}" queue-capacity="${domainEvent.subscriber.executor.queue.capacity}" />
+    
+  <bean id="valueDecoder" class="org.springframework.integration.kafka.serializer.common.StringDecoder" />
+
+</beans>

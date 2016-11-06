@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+  xsi:schemaLocation="http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context.xsd
+          http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+          http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <mongo:mongo host="${dataSource.mongo.host}" port="${dataSource.mongo.port}" replica-set="${dataSource.mongo.replicaSet}">
+    <mongo:options connections-per-host="${dataSource.mongo.connection-per-host}"
+      threads-allowed-to-block-for-connection-multiplier="${dataSource.mongo.threads-allowed-to-block-for-connection-multiplier}"
+      connect-timeout="${dataSource.mongo.connect-timeout}" max-wait-time="${dataSource.mongo.max-wait-time}"
+      auto-connect-retry="${dataSource.mongo.auto-connect-retry}" socket-keep-alive="${dataSource.mongo.socket-keep-alive}"
+      socket-timeout="${dataSource.mongo.socket-timeout}" slave-ok="${dataSource.mongo.slave-ok}" write-number="${dataSource.mongo.write-number}"
+      write-timeout="${dataSource.mongo.write-timeout}" write-fsync="${dataSource.mongo.write-fsync}" />
+  </mongo:mongo>
+
+  <mongo:db-factory dbname="${dataSource.mongo.databaseName}" mongo-ref="mongo" username="${dataSource.mongo.username}" password="${dataSource.mongo.password}" />
+
+  <mongo:auditing mapping-context-ref="customMappingContext" auditor-aware-ref="mongoAuditor" />
+
+  <bean id="mongoAuditor" class="com.gdn.x.config.StringAuditorAware" />
+
+  <bean id="customMappingContext" class="com.gdn.x.config.CustomMongoMappingContext">
+    <constructor-arg index="0" value="${dataSource.mongo.mappingBasePackage}" />
+  </bean>
+
+  <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+    <constructor-arg ref="mongoDbFactory" />
+  </bean>
+
+</beans>
