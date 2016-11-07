@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath*:gdn-x-context.xml,classpath*:gdn-spring-data-*.xml,classpath*:spring-security.xml,classpath*:gdn-spring-javasimon.xml</param-value>
+  </context-param>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>com.ryantenney.metrics.spring.servlets.MetricsServletsContextListener</listener-class>
+  </listener>
+  <filter>
+    <filter-name>MandatoryRequestHolderFilter</filter-name>
+    <filter-class>com.gdn.x.base.filter.MandatoryRequestHolderFilter</filter-class>
+    <init-param>
+      <param-name>excludedPath</param-name>
+      <param-value>/docs/,/api-docs,/simon-console,/sys-info,/version</param-value>
+    </init-param>
+  </filter>
+  <filter>
+    <filter-name>LogMdcFilter</filter-name>
+    <filter-class>com.gdn.x.base.filter.LogMdcFilter</filter-class>
+  </filter> 
+  <filter>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    <async-supported>true</async-supported>
+  </filter>
+  <filter>
+    <filter-name>httpMethodFilter</filter-name>
+    <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+  </filter>
+  <!-- Reads request input using UTF-8 encoding -->
+  <filter>
+    <filter-name>characterEncodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter>
+    <filter-name>simon-filter</filter-name>
+    <filter-class>org.javasimon.javaee.SimonServletFilter</filter-class>
+    <!-- optional -->
+    <init-param>
+      <param-name>prefix</param-name>
+      <param-value>com.gdn.x</param-value>
+    </init-param>
+    <!-- optional, necessary when long requests should be reported -->
+    <init-param>
+      <param-name>report-threshold-ms</param-name>
+      <param-value>1000</param-value>
+    </init-param>
+    <!-- optional, used by reporting mechanism - default implementation uses Manager.message to log stuff, this goes to stdout -->
+    <init-param>
+      <param-name>request-reporter-class</param-name>
+      <param-value>org.javasimon.javaee.reqreporter.StandardRequestReporter</param-value>
+    </init-param>
+    <!-- optional, used to specify parameters for StopwatchSource instance -->
+    <init-param>
+      <param-name>stopwatch-source-props</param-name>
+      <param-value>includeHttpMethodName=ALWAYS</param-value>
+    </init-param>
+    <!-- see Javadoc for org.javasimon.javaee.SimonServletFilter for more about available parameters -->
+  </filter>
+  <!-- this is related to optional Web Console (not the basic ones included in the filter above) - NOT NECESSARY for monitoring 
+    itself if you use different way how to get the results (JMX, own mechanism, ...) -->
+  <filter>
+    <filter-name>simon-console-filter</filter-name>
+    <filter-class>org.javasimon.console.SimonConsoleFilter</filter-class>
+    <init-param>
+      <param-name>url-prefix</param-name>
+      <param-value>/simon-console</param-value>
+    </init-param>
+  </filter>
+  <!-- absolute path injector filter -->
+  <filter>
+    <filter-name>absolutePathInjectorFilter</filter-name>
+    <filter-class>com.gdn.x.base.filter.AbsolutePathInjectorFilter</filter-class>
+  </filter>
+  <filter>
+    <filter-name>sessionInvalidateFilter</filter-name>
+    <filter-class>com.gdn.x.base.filter.SessionInvalidateFilter</filter-class>
+  </filter>
+  <!-- in case Console is used it is recommended to put it in front of the monitoring filter, so it is not monitored -->
+  <filter-mapping>
+    <filter-name>LogMdcFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>MandatoryRequestHolderFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping> 
+  <filter-mapping>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>ASYNC</dispatcher>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>simon-console-filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>simon-filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>absolutePathInjectorFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>httpMethodFilter</filter-name>
+    <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>characterEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>sessionInvalidateFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <servlet>
+    <servlet-name>SimonConsoleServlet</servlet-name>
+    <servlet-class>org.javasimon.console.SimonConsoleServlet</servlet-class>
+    <init-param>
+      <param-name>url-prefix</param-name>
+      <param-value>/javasimon-console</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SimonConsoleServlet</servlet-name>
+    <url-pattern>/javasimon-console/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>DropWizardAdminServlet</servlet-name>
+    <servlet-class>com.codahale.metrics.servlets.AdminServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DropWizardAdminServlet</servlet-name>
+    <url-pattern>/sys-info/*</url-pattern>
+  </servlet-mapping>
+  <!-- Handles all requests into the application -->
+  <servlet>
+    <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>/WEB-INF/springmvc-context.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  <session-config>
+    <session-timeout>1</session-timeout>
+    <cookie-config>
+      <http-only>true</http-only>
+      <max-age>0</max-age>
+    </cookie-config>
+  </session-config>
+  <!-- error pages -->
+  <error-page>
+    <error-code>404</error-code>
+    <location>/WEB-INF/error/404.htm</location>
+  </error-page>
+  <error-page>
+    <error-code>403</error-code>
+    <location>/WEB-INF/error/error.htm</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/WEB-INF/error/error.htm</location>
+  </error-page>
+  <error-page>
+    <error-code>400</error-code>
+    <location>/WEB-INF/error/error.htm</location>
+  </error-page>
+  <error-page>
+    <error-code>503</error-code>
+    <location>/WEB-INF/error/error.htm</location>
+  </error-page>
+  <error-page>
+    <error-code>504</error-code>
+    <location>/WEB-INF/error/error.htm</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Exception</exception-type>
+    <location>/WEB-INF/error/error.htm</location>
+  </error-page>
+</web-app>

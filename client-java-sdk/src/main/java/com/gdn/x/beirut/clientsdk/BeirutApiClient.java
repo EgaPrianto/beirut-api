@@ -171,7 +171,7 @@ public class BeirutApiClient extends GdnBaseRestCrudClient {
         generateURI(path, requestId, username, additionalParameterMap),
         getClientConfig().getConnectionTimeoutInMs());
     MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
-    entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE).addPart("content",
+    entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE).addPart("file",
         new ByteArrayBody(content, filename));
     httpPost.setEntity(entityBuilder.build());
     httpPost.setHeader("Accept", APPLICATION_JSON);
@@ -373,7 +373,7 @@ public class BeirutApiClient extends GdnBaseRestCrudClient {
       String positionDTORequestString, String filename, byte[] content) throws Exception {
     HashMap<String, String> additionalParameterMap = new HashMap<String, String>();
     additionalParameterMap.put("positionDTORequestString",
-        objectMapper.writeValueAsString(positionDTORequestString));
+        positionDTORequestString);
     HttpPost httpPost = generateMultipartHttpPost("/position/insertNewPosition", content, requestId,
         filename, username, additionalParameterMap);
     return sendMultipartFile(httpPost);
@@ -382,8 +382,7 @@ public class BeirutApiClient extends GdnBaseRestCrudClient {
   private GdnBaseRestResponse sendMultipartFile(HttpPost httpPost) throws Exception {
     CloseableHttpResponse response = getHttpClient().execute(httpPost);
     if (response.getStatusLine().getStatusCode() == 200) {
-      return objectMapper.readValue(EntityUtils.toString(response.getEntity()),
-          new TypeReference<GdnRestListResponse>() {});
+      return new GdnBaseRestResponse(true);
     } else {
       String responseText = null;
       if (response.getEntity() != null) {

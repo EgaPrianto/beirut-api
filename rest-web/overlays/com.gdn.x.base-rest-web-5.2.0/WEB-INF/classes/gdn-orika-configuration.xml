@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context.xsd
+          http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd">
+          
+  <bean id="gdnMapper" class="com.gdn.common.base.mapper.impl.OrikaMapper" >
+    <constructor-arg index="0" ref="mapperFactory"/>
+  </bean>
+  
+  <bean id="mapperFactory" factory-bean="mapperFactoryBuilder" factory-method="getMapperFactory" />
+  
+  <bean id="mapperFactoryBuilder" class="com.gdn.common.base.mapper.MapperFactoryBuilder">
+    <constructor-arg index="0" value="${application.base.package}"/>
+    <constructor-arg index="1" value="${orika.field.map.using.annotation}"/>
+  </bean>
+
+</beans>

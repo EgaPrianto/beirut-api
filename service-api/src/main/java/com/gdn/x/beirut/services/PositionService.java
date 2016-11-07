@@ -33,6 +33,8 @@ public interface PositionService {
 
   public Position insertNewPosition(Position position);
 
+  public Position updatePositionDescription(PositionDescription positionDescription);
+
   public void markForDeletePosition(String storeId, List<String> id) throws Exception;
 
   public boolean updatePositionInformation(Position position) throws Exception;

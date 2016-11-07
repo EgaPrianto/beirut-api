@@ -130,6 +130,19 @@ public class PositionServiceImpl implements PositionService {
   }
 
   @Override
+  public Position updatePositionDescription(PositionDescription positionDescription) {
+    Position position = positionDAO.findOne(positionDescription.getPosition().getId());
+    PositionDescription positionDescriptionMaster = position.getPositionDescription();
+    positionDescriptionMaster.setContentDescription(positionDescription.getContentDescription());
+    positionDescriptionMaster.setFilename(positionDescription.getFilename());
+    positionDescriptionMaster.setMediaType(positionDescription.getMediaType());
+    positionDescriptionMaster.setPosition(position);
+    position.setPositionDescription(positionDescriptionMaster);
+    positionDAO.save(position);
+    return position;
+  }
+
+  @Override
   @Transactional(readOnly = false)
   public void markForDeletePosition(String storeId, List<String> ids) throws Exception {
     // System.out.println(ids.toString());

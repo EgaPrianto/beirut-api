@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+  <bean id="simonManager" class="org.javasimon.spring.ManagerFactoryBean">
+    <property name="callbacks">
+      <list>
+        <bean class="org.javasimon.jmx.JmxRegisterCallback">
+          <constructor-arg index="0" ref="mBeanServer" />
+          <constructor-arg index="1" value="${application.base.package}" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+  <bean id="simonManagerMBean" class="org.javasimon.jmx.SimonManagerMXBeanImpl">
+    <constructor-arg index="0" ref="simonManager" />
+  </bean>
+  <bean id="mBeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
+    <property name="locateExistingServerIfPossible" value="true" />
+  </bean>
+  <bean class="org.springframework.jmx.export.MBeanExporter">
+    <property name="beans">
+      <map>
+        <entry key="${application.base.package}:name=SimonManager" value-ref="simonManagerMBean" />
+      </map>
+    </property>
+    <property name="registrationBehaviorName" value="REGISTRATION_REPLACE_EXISTING" />
+  </bean>
+</beans>

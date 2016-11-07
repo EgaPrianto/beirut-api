@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:int="http://www.springframework.org/schema/integration" xmlns:int-kafka="http://www.springframework.org/schema/integration/kafka"
+  xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.2.xsd
+        http://www.springframework.org/schema/integration/kafka http://www.springframework.org/schema/integration/kafka/spring-integration-kafka.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+  <int:channel id="messageChannel">
+    <int:queue />
+  </int:channel>
+
+  <int-kafka:outbound-channel-adapter
+    id="kafkaOutboundChannelAdapter"
+    order="${domainEvent.publisher.outbound.channel.order}"
+    auto-startup="true"
+    channel="messageChannel"
+    kafka-producer-context-ref="kafkaProducerContext">
+      <int:poller
+        fixed-delay="${domainEvent.publisher.poller.fixed.delay}"
+        time-unit="MILLISECONDS"
+        receive-timeout="${domainEvent.publisher.poller.receive.timeout}"
+        task-executor="publisherTaskExecutor" />
+  </int-kafka:outbound-channel-adapter>
+
+  <bean id="publishDomainEventAnnotationAspect" class="com.gdn.common.base.domainevent.publisher.PublishDomainEventAnnotationAspect">
+    <constructor-arg index="0" ref="publisherExecutor" />
+    <constructor-arg index="1" ref="objectMapper" />
+    <constructor-arg index="2" ref="gdnMapper" />
+    <constructor-arg index="3" ref="messageChannel" />
+  </bean>
+  
+  <bean id="kafkaTopicPublisher" class="com.gdn.common.base.domainevent.publisher.kafka.KafkaTopicPublisher">
+    <constructor-arg index="0" ref="publisherExecutor" />
+    <constructor-arg index="1" ref="objectMapper" />
+    <constructor-arg index="2" ref="gdnMapper" />
+    <constructor-arg index="3" ref="messageChannel" />
+  </bean>
+
+  <bean id="publisherTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+    <property name="corePoolSize" value="${domainEvent.publisher.executor.pool.size}"/>
+    <property name="maxPoolSize" value="${domainEvent.publisher.executor.pool.size}"/>
+    <property name="keepAliveSeconds" value="${domainEvent.publisher.executor.keep.alive}"/>
+    <property name="queueCapacity" value="${domainEvent.publisher.executor.queue.capacity}"/>
+  </bean>
+
+  <bean id="publisherExecutor" class="org.springframework.core.task.support.ExecutorServiceAdapter" autowire-candidate="false">
+    <constructor-arg ref="publisherTaskExecutor" />
+  </bean>
+
+  <bean id="encoder" class="org.springframework.integration.kafka.serializer.common.StringEncoder" />
+  <bean id="partitioner" class="org.springframework.integration.kafka.support.DefaultPartitioner" />
+  
+  <int-kafka:producer-context id="kafkaProducerContext" producer-properties="producerProps">
+    <int-kafka:producer-configurations>
+      <int-kafka:producer-configuration
+        broker-list="${domainEvent.publisher.broker.list}"
+        topic="default"
+        key-class-type="java.lang.String"
+        key-encoder="encoder"
+        value-encoder="encoder"
+        value-class-type="java.lang.String"
+        partitioner="partitioner" /> 
+    </int-kafka:producer-configurations>
+  </int-kafka:producer-context>
+  
+  <util:properties id="producerProps">
+    <prop key="queue.buffering.max.ms">${domainEvent.publisher.queue.buffering.max.ms}</prop>
+    <prop key="topic.metadata.refresh.interval.ms">${domainEvent.publisher.topic.metadata.refresh.interval.ms}</prop>
+    <prop key="queue.buffering.max.messages">${domainEvent.publisher.queue.buffering.max.messages}</prop>
+    <prop key="retry.backoff.ms">${domainEvent.publisher.retry.backoff.ms}</prop>
+    <prop key="message.send.max.retries">${domainEvent.publisher.message.send.max.retries}</prop>
+    <prop key="send.buffer.bytes">${domainEvent.publisher.send.buffer.bytes}</prop>
+    <prop key="socket.request.max.bytes">${domainEvent.publisher.socket.request.max.bytes}</prop>
+    <prop key="socket.receive.buffer.bytes">${domainEvent.publisher.socket.receive.buffer.bytes}</prop>
+    <prop key="socket.send.buffer.bytes">${domainEvent.publisher.socket.send.buffer.bytes}</prop>
+    <prop key="request.required.acks">${domainEvent.publisher.request.required.acks}</prop>
+  </util:properties>
+  
+</beans>
