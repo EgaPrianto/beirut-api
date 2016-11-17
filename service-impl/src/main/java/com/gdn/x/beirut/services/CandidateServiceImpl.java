@@ -59,6 +59,7 @@ public class CandidateServiceImpl implements CandidateService {
   @Override
   @Transactional(readOnly = false)
   public Candidate applyNewPosition(String candidateId, List<String> positionIds) throws Exception {
+    LOG.info("Start Service API ApplynewPosition called" + positionIds.toString());
     Candidate existingCandidate = getCandidate(candidateId);
     if (positionIds == null || positionIds.size() == 0) {
       throw new ApplicationException(ErrorCategory.REQUIRED_PARAMETER, "position must not empty");
@@ -74,6 +75,7 @@ public class CandidateServiceImpl implements CandidateService {
       statusLog.setStoreId(existingCandidate.getStoreId());
       statusLog.setCandidatePosition(candidatePosition);
       statusLog.setStatus(Status.APPLY);
+      candidatePosition.getStatusLogs().add(statusLog);
       existingCandidate.getCandidatePositions().add(candidatePosition);
     }
     Candidate result = candidateDAO.save(existingCandidate);

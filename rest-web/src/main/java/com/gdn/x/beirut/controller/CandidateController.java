@@ -78,6 +78,7 @@ public class CandidateController {
       @RequestParam String username, @RequestBody ApplyNewPositionModelDTORequest content)
           throws Exception {
     try {
+      LOG.info("Controller ApplynewPosition called" + content.getListPositionIds().toString());
       this.candidateService.applyNewPosition(content.getIdCandidate(),
           content.getListPositionIds());
       return new GdnBaseRestResponse(true);

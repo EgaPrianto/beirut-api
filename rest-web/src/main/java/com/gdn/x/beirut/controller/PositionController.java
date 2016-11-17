@@ -1,5 +1,21 @@
 package com.gdn.x.beirut.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.esotericsoftware.minlog.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gdn.common.base.mapper.GdnMapper;
 import com.gdn.common.enums.ErrorCategory;
@@ -20,15 +36,6 @@ import com.gdn.x.beirut.entities.StatusPosition;
 import com.gdn.x.beirut.services.PositionService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping(value = "/api/position/")
@@ -44,12 +51,10 @@ public class PositionController {
   @Autowired
   private ObjectMapper objectMapper;
 
-  @RequestMapping(value = "deletePosition",
-      method = RequestMethod.POST,
+  @RequestMapping(value = "deletePosition", method = RequestMethod.POST,
       consumes = {MediaType.APPLICATION_JSON_VALUE},
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-  @ApiOperation(value = "delete position",
-      notes = "menghapus posisi.")
+  @ApiOperation(value = "delete position", notes = "menghapus posisi.")
   @ResponseBody
   public GdnBaseRestResponse deletePosition(@RequestParam String clientId,
       @RequestParam String storeId, @RequestParam String requestId, @RequestParam String channelId,
@@ -58,11 +63,9 @@ public class PositionController {
     return new GdnBaseRestResponse(true);
   }
 
-  @RequestMapping(value = "getAllPosition",
-      method = RequestMethod.GET,
+  @RequestMapping(value = "getAllPosition", method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-  @ApiOperation(value = "get all position",
-      notes = "mengambil semua posisi.")
+  @ApiOperation(value = "get all position", notes = "mengambil semua posisi.")
   @ResponseBody
   public GdnRestListResponse<PositionDTOResponse> getAllPositionByStoreId(
       @RequestParam String clientId, @RequestParam String storeId, @RequestParam String requestId,
@@ -79,8 +82,7 @@ public class PositionController {
         new PageMetaData(5, 5, positions.size()), requestId);
   }
 
-  @RequestMapping(value = "getAllPositionWithPageable",
-      method = RequestMethod.GET,
+  @RequestMapping(value = "getAllPositionWithPageable", method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
   @ApiOperation(value = "get all Candidate restricted with Pagination",
       notes = "mengambil semua posisi with pagination")
@@ -89,8 +91,8 @@ public class PositionController {
       @RequestParam String clientId, @RequestParam String storeId, @RequestParam String requestId,
       @RequestParam String channelId, @RequestParam String username, @RequestParam int page,
       @RequestParam int size) {
-    Page<Position> positions = this.positionService
-        .getAllPositionByStoreIdWithPageable(storeId, PageableHelper.generatePageable(page, size));
+    Page<Position> positions = this.positionService.getAllPositionByStoreIdWithPageable(storeId,
+        PageableHelper.generatePageable(page, size));
     List<PositionDTOResponse> res = new ArrayList<>();
     for (Position position : positions) {
       PositionDTOResponse positionDTOResponse =
@@ -101,8 +103,7 @@ public class PositionController {
         new PageMetaData(positions.getTotalPages(), page, positions.getTotalElements()), requestId);
   }
 
-  @RequestMapping(value = "getAllPositionWithPageableAndMarkForDelete",
-      method = RequestMethod.GET,
+  @RequestMapping(value = "getAllPositionWithPageableAndMarkForDelete", method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
   @ApiOperation(value = "get all Candidate restricted with Pagination",
       notes = "mengambil semua posisi with pagination")
@@ -111,8 +112,8 @@ public class PositionController {
       @RequestParam String clientId, @RequestParam String storeId, @RequestParam String requestId,
       @RequestParam String channelId, @RequestParam String username, @RequestParam int page,
       @RequestParam int size, @RequestParam boolean isDeleted) {
-    Page<Position> positions = this.positionService
-        .getAllPositionByStoreIdWithPageableAndMarkForDelete(storeId,
+    Page<Position> positions =
+        this.positionService.getAllPositionByStoreIdWithPageableAndMarkForDelete(storeId,
             PageableHelper.generatePageable(page, size), isDeleted);
     List<PositionDTOResponse> res = new ArrayList<>();
     for (Position position : positions) {
@@ -128,23 +129,13 @@ public class PositionController {
     return gdnMapper;
   }
 
-  public void setGdnMapper(GdnMapper gdnMapper) {
-    this.gdnMapper = gdnMapper;
-  }
-
   public ObjectMapper getObjectMapper() {
     return objectMapper;
   }
 
-  public void setObjectMapper(ObjectMapper objectMapper) {
-    this.objectMapper = objectMapper;
-  }
-
-  @RequestMapping(value = "getPositionByStoreIdAndId",
-      method = RequestMethod.GET,
+  @RequestMapping(value = "getPositionByStoreIdAndId", method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-  @ApiOperation(value = "get position by ids",
-      notes = "mengambil semua posisi dengan id-id.")
+  @ApiOperation(value = "get position by ids", notes = "mengambil semua posisi dengan id-id.")
   @ResponseBody
   public GdnRestSingleResponse<PositionDTOResponse> getPositionByStoreIdAndId(
       @RequestParam String clientId, @RequestParam String storeId, @RequestParam String requestId,
@@ -155,8 +146,7 @@ public class PositionController {
     return new GdnRestSingleResponse<PositionDTOResponse>(positionDTOResponse, requestId);
   }
 
-  @RequestMapping(value = "getPositionByStoreIdAndMarkForDelete",
-      method = RequestMethod.GET,
+  @RequestMapping(value = "getPositionByStoreIdAndMarkForDelete", method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
   @ApiOperation(value = "get position by storeid and markForDelete",
       notes = "mengambil semua posisi dengan StoreId dengan markForDelete.")
@@ -178,11 +168,9 @@ public class PositionController {
         new PageMetaData(50, 0, positionDTOResponses.size()), requestId);
   }
 
-  @RequestMapping(value = "getPositionByTitle",
-      method = RequestMethod.GET,
+  @RequestMapping(value = "getPositionByTitle", method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-  @ApiOperation(value = "get position by title",
-      notes = "mengambil semua posisi dengan nama.")
+  @ApiOperation(value = "get position by title", notes = "mengambil semua posisi dengan nama.")
   @ResponseBody
   public GdnRestListResponse<PositionDTOResponse> getPositionByTitle(@RequestParam String clientId,
       @RequestParam String storeId, @RequestParam String requestId, @RequestParam String channelId,
@@ -200,11 +188,9 @@ public class PositionController {
         new PageMetaData(5, 5, positions.size()), requestId);
   }
 
-  @RequestMapping(value = "getPositionDescriptionAndStoreId",
-      method = RequestMethod.GET,
+  @RequestMapping(value = "getPositionDescriptionAndStoreId", method = RequestMethod.GET,
       produces = {"text/plain"})
-  @ApiOperation(value = "Mencari deskripsi Position",
-      notes = "")
+  @ApiOperation(value = "Mencari deskripsi Position", notes = "")
   @ResponseBody
   public byte[] getPositionDescriptionAndStoreId(@RequestParam String clientId,
       @RequestParam String storeId, @RequestParam String requestId, @RequestParam String channelId,
@@ -214,8 +200,7 @@ public class PositionController {
     return positionDescription.getContentDescription();
   }
 
-  @RequestMapping(value = "getPositionDetail",
-      method = RequestMethod.GET,
+  @RequestMapping(value = "getPositionDetail", method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
   @ApiOperation(value = "Mendapatkan semua posisi dengan detil",
       notes = "Menampilkan Candidate-kandidate yang mendaftare posisi-posisi tersebut termulti-tenant dengan masing2 storeID")
@@ -223,7 +208,7 @@ public class PositionController {
   public GdnRestListResponse<PositionDetailDTOResponse> getPositionDetailById(
       @RequestParam String clientId, @RequestParam String storeId, @RequestParam String requestId,
       @RequestParam String channelId, @RequestParam String username, @RequestParam String id)
-      throws Exception {
+          throws Exception {
     try {
       Position result = this.positionService.getPositionDetailByIdAndStoreId(id, storeId);
       List<PositionDetailDTOResponse> positionDetailDTOResponses = new ArrayList<>();
@@ -235,12 +220,10 @@ public class PositionController {
     }
   }
 
-  @RequestMapping(value = "insertNewPosition",
-      method = RequestMethod.POST,
+  @RequestMapping(value = "insertNewPosition", method = RequestMethod.POST,
       consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-  @ApiOperation(value = "insert new position",
-      notes = "memasukan posisi baru.")
+  @ApiOperation(value = "insert new position", notes = "memasukan posisi baru.")
   @ResponseBody
   public GdnBaseRestResponse insertNewPosition(@RequestParam String clientId,
       @RequestParam String storeId, @RequestParam String requestId, @RequestParam String channelId,
@@ -274,52 +257,54 @@ public class PositionController {
      */
   }
 
-  @RequestMapping(value = "updatePositionsStatus",
-      method = RequestMethod.POST,
+  public void setGdnMapper(GdnMapper gdnMapper) {
+    this.gdnMapper = gdnMapper;
+  }
+
+  public void setObjectMapper(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
+
+  @RequestMapping(value = "updatePositionsStatus", method = RequestMethod.POST,
       consumes = {MediaType.APPLICATION_JSON_VALUE},
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-  @ApiOperation(value = "update position status",
-      notes = "Update satu atau lebih Status Position")
+  @ApiOperation(value = "update position status", notes = "Update satu atau lebih Status Position")
   @ResponseBody
   public GdnBaseRestResponse updateCandidatesStatus(@RequestParam String clientId,
       @RequestParam String storeId, @RequestParam String requestId, @RequestParam String channelId,
       @RequestParam String username, @RequestBody UpdatePositionStatusModelDTORequest content)
-      throws Exception {
+          throws Exception {
     StatusPosition status = StatusPosition.valueOf(content.getStatusDTORequest());
     // CandidateMapper.statusEnumMap(status, _status);
     this.positionService.updatePositionStatusBulk(storeId, content.getIdPositions(), status);
     return new GdnBaseRestResponse(true);
   }
 
-  @RequestMapping(value = "updatePositionInformation",
-      method = RequestMethod.POST,
+  @RequestMapping(value = "updatePositionInformation", method = RequestMethod.POST,
       consumes = {MediaType.APPLICATION_JSON_VALUE},
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-  @ApiOperation(value = "update position",
-      notes = "mengganti posisi.")
+  @ApiOperation(value = "update position", notes = "mengganti posisi.")
   @ResponseBody
   public GdnBaseRestResponse updatePosition(@RequestParam String clientId,
       @RequestParam String storeId, @RequestParam String requestId, @RequestParam String channelId,
       @RequestParam String username, @RequestBody PositionDTORequest positionDTORequest)
-      throws Exception {
+          throws Exception {
     Position position = gdnMapper.deepCopy(positionDTORequest, Position.class);
     position.setStoreId(storeId);
     return new GdnBaseRestResponse(this.positionService.updatePositionInformation(position));
   }
 
-  @RequestMapping(value = "updatePositionDescription",
-      method = RequestMethod.POST,
+  @RequestMapping(value = "updatePositionDescription", method = RequestMethod.POST,
       consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-  @ApiOperation(value = "insert new position",
-      notes = "memasukan posisi baru.")
+  @ApiOperation(value = "insert new position", notes = "memasukan posisi baru.")
   @ResponseBody
   public GdnBaseRestResponse updatePositionDescription(@RequestParam String clientId,
       @RequestParam String storeId, @RequestParam String requestId, @RequestParam String channelId,
-      @RequestParam String username, @RequestParam String idPosition, @RequestPart MultipartFile file)
-      throws Exception {
-//    content,
-//        requestId, filename, username, additionalParameterMap
+      @RequestParam String username, @RequestParam String idPosition,
+      @RequestPart MultipartFile file) throws Exception {
+    // content,
+    // requestId, filename, username, additionalParameterMap
     if (file == null || file.getBytes().length == 0) {
       throw new ApplicationException(ErrorCategory.REQUIRED_PARAMETER,
           "file content mustbe present");
@@ -333,6 +318,7 @@ public class PositionController {
     newPositionDesc.setContentDescription(file.getBytes());
     newPositionDesc.setPosition(currentPosition);
     newPositionDesc.setFilename(file.getOriginalFilename());
+    Log.info("FILENYA !!!! DI CONTROLLER POSITION API : " + new String(file.getBytes()));
     newPositionDesc.setMediaType(file.getContentType());
     currentPosition.setPositionDescription(newPositionDesc);
     Position resultPosition = positionService.updatePositionDescription(newPositionDesc);
